@@ -46,4 +46,3 @@ Special thanks to the developers and contributors who make this project possible
 
 Inspired by the idea of "Rubber Duck Debugging" as a way to teach programming and debugging through conversation.
 
-Feel free to make any further adjustments as needed!
