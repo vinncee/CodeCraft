@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "ES2022",
+		"outDir": "out",
+		"lib": ["ES2022", "dom"],
+		"sourceMap": true,
+		"rootDir": "src",
+		"strict": true,
+		"types": ["mocha","node", "vscode"],
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedParameters": true
+	},
+	"include": ["src", "media/main.js", "out/media"],
+	"exclude": ["node_modules"]
+}
+
