@@ -42,7 +42,6 @@ View visualizations: If you’re struggling with specific programming concepts (
 
 Track progress: As you solve problems, track your achievements, unlock badges, and follow the step-by-step roadmap tailored to your coding project.
 
-Acknowledgements
 Special thanks to the developers and contributors who make this project possible!
 
 Inspired by the idea of "Rubber Duck Debugging" as a way to teach programming and debugging through conversation.
