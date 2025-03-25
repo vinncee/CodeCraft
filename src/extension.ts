@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register the main command to open the AI Coding Mentor
   const disposable = vscode.commands.registerCommand("codecraft.openAIMentor", () => {
-    AIMentorPanel.createOrShow(context.extensionUri, aiService)
+    AIMentorPanel.createOrShow(context.extensionUri, aiService, context)
   })
 
   // Register the command to explain errors
@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (AIMentorPanel.currentPanel) {
       AIMentorPanel.currentPanel.explainCurrentError()
     } else {
-      AIMentorPanel.createOrShow(context.extensionUri, aiService)
+      AIMentorPanel.createOrShow(context.extensionUri, aiService, context)
       // Wait for panel to initialize
       setTimeout(() => {
         if (AIMentorPanel.currentPanel) {
@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   // Track diagnostics changes to show/hide the "Explain This Error" button
-  vscode.languages.onDidChangeDiagnostics((e) => {
+  vscode.languages.onDidChangeDiagnostics(() => {
     if (AIMentorPanel.currentPanel) {
       AIMentorPanel.currentPanel.updateDiagnostics()
     }
@@ -71,8 +71,12 @@ class AIMentorPanel {
   private readonly _aiService: AIService
   private _disposables: vscode.Disposable[] = []
   private _responseMode: ResponseMode = ResponseMode.Text
+  private _userExp = 0
+  private _userLevel = 1
+  private _expToNextLevel = 100
+  private _context: vscode.ExtensionContext
 
-  public static createOrShow(extensionUri: vscode.Uri, aiService: AIService) {
+  public static createOrShow(extensionUri: vscode.Uri, aiService: AIService, context: vscode.ExtensionContext) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
 
     // If we already have a panel, show it
@@ -93,13 +97,23 @@ class AIMentorPanel {
       },
     )
 
-    AIMentorPanel.currentPanel = new AIMentorPanel(panel, extensionUri, aiService)
+    AIMentorPanel.currentPanel = new AIMentorPanel(panel, extensionUri, aiService, context)
   }
 
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, aiService: AIService) {
+  private constructor(
+    panel: vscode.WebviewPanel,
+    extensionUri: vscode.Uri,
+    aiService: AIService,
+    context: vscode.ExtensionContext,
+  ) {
     this._panel = panel
     this._extensionUri = extensionUri
     this._aiService = aiService
+    this._context = context
+
+    this._userExp = context.globalState.get("codecraft.userExp", 0)
+    this._userLevel = context.globalState.get("codecraft.userLevel", 1)
+    this._expToNextLevel = context.globalState.get("codecraft.expToNextLevel", 100)
 
     // Set the webview's initial html content
     this._update()
@@ -129,6 +143,9 @@ class AIMentorPanel {
             return
           case "setSocraticLevel":
             this._setSocraticLevel(message.level)
+            return
+          case "updateExperience":
+            this._updateExperience(message.exp, message.level)
             return
         }
       },
@@ -239,10 +256,35 @@ class AIMentorPanel {
     // No need to reset the conversation, the AI service will pick up the new setting
   }
 
+  private async _updateExperience(exp: number, level: number) {
+    // Update the stored values
+    this._userExp = exp
+    this._userLevel = level
+
+    // Save to global state
+    await this._context.globalState.update("codecraft.userExp", this._userExp)
+    await this._context.globalState.update("codecraft.userLevel", this._userLevel)
+    await this._context.globalState.update("codecraft.expToNextLevel", this._expToNextLevel)
+
+    // Save to extension context global state
+    vscode.commands.executeCommand("workbench.action.webview.updateGlobalState", {
+      "codecraft.userExp": this._userExp,
+      "codecraft.userLevel": this._userLevel,
+      "codecraft.expToNextLevel": this._expToNextLevel,
+    })
+  }
+
   private _update() {
     const webview = this._panel.webview
     this._panel.title = "AI Coding Mentor"
     this._panel.webview.html = this._getHtmlForWebview(webview)
+    // Send initial experience data
+    this._panel.webview.postMessage({
+      command: "initExperience",
+      exp: this._userExp,
+      level: this._userLevel,
+      expToNextLevel: this._expToNextLevel,
+    })
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {

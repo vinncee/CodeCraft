@@ -431,6 +431,13 @@
         
         // Save state
         vscode.setState(state);
+
+        // Send experience update to extension for persistent storage
+        vscode.postMessage({
+          command: 'updateExperience',
+          exp: state.exp,
+          level: state.level
+        });
       }
 
       // Apply theme
@@ -606,6 +613,25 @@
             } else {
               apiKeyWarning.classList.add('hidden');
             }
+            break;
+
+          case 'initExperience':
+            // Initialize experience from extension's stored values
+            state.exp = message.exp;
+            state.level = message.level;
+            state.expToNextLevel = message.expToNextLevel;
+            
+            // Update UI
+            const expInCurrentLevel = state.exp % state.expToNextLevel;
+            const progressPercent = (expInCurrentLevel / state.expToNextLevel) * 100;
+            
+            document.getElementById('exp-value').textContent = `${state.exp} XP`;
+            document.getElementById('exp-fill').style.width = `${progressPercent}%`;
+            document.getElementById('current-level').textContent = state.level;
+            document.getElementById('level-progress').textContent = `${expInCurrentLevel}/${state.expToNextLevel}`;
+            
+            // Save to webview state
+            vscode.setState(state);
             break;
         }
       });
