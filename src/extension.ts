@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   // Track diagnostics changes to show/hide the "Explain This Error" button
-  vscode.languages.onDidChangeDiagnostics(() => {
+  vscode.languages.onDidChangeDiagnostics((e) => {
     if (AIMentorPanel.currentPanel) {
       AIMentorPanel.currentPanel.updateDiagnostics()
     }
@@ -113,7 +113,9 @@ class AIMentorPanel {
 
     this._userExp = context.globalState.get("codecraft.userExp", 0)
     this._userLevel = context.globalState.get("codecraft.userLevel", 1)
-    this._expToNextLevel = context.globalState.get("codecraft.expToNextLevel", 100)
+
+    // Calculate XP needed for next level based on current level
+    this._expToNextLevel = Math.floor(100 * Math.pow(1.5, this._userLevel - 1))
 
     // Set the webview's initial html content
     this._update()
@@ -261,17 +263,13 @@ class AIMentorPanel {
     this._userExp = exp
     this._userLevel = level
 
+    // Calculate new XP requirement for next level (increases with each level)
+    this._expToNextLevel = Math.floor(100 * Math.pow(1.5, level - 1))
+
     // Save to global state
     await this._context.globalState.update("codecraft.userExp", this._userExp)
     await this._context.globalState.update("codecraft.userLevel", this._userLevel)
     await this._context.globalState.update("codecraft.expToNextLevel", this._expToNextLevel)
-
-    // Save to extension context global state
-    vscode.commands.executeCommand("workbench.action.webview.updateGlobalState", {
-      "codecraft.userExp": this._userExp,
-      "codecraft.userLevel": this._userLevel,
-      "codecraft.expToNextLevel": this._expToNextLevel,
-    })
   }
 
   private _update() {

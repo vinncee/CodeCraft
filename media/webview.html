@@ -400,18 +400,24 @@
         const expGain = 10;
         state.exp += expGain;
         
-        // Calculate level and progress
-        const level = Math.floor(state.exp / state.expToNextLevel) + 1;
-        const expInCurrentLevel = state.exp % state.expToNextLevel;
-        const progressPercent = (expInCurrentLevel / state.expToNextLevel) * 100;
+        // Get current XP requirement for this level
+        const currentLevelXP = Math.floor(100 * Math.pow(1.5, state.level - 1));
         
-        // Update level if changed
-        if (level !== state.level) {
-          state.level = level;
-          // Show level up notification
+        // Check if leveled up
+        let leveledUp = false;
+        while (state.exp >= state.expToNextLevel) {
+          state.exp -= state.expToNextLevel;
+          state.level++;
+          leveledUp = true;
+          // Calculate new XP requirement for next level
+          state.expToNextLevel = Math.floor(100 * Math.pow(1.5, state.level - 1));
+        }
+        
+        // Show level up notification if leveled up
+        if (leveledUp) {
           const levelUpDiv = document.createElement('div');
           levelUpDiv.className = 'level-up-notification';
-          levelUpDiv.textContent = `Level Up! You're now level ${level}`;
+          levelUpDiv.textContent = `Level Up! You're now level ${state.level}`;
           document.body.appendChild(levelUpDiv);
           
           // Remove notification after animation
@@ -423,11 +429,14 @@
           }, 3000);
         }
         
+        // Calculate progress percentage
+        const progressPercent = (state.exp / state.expToNextLevel) * 100;
+        
         // Update UI
         document.getElementById('exp-value').textContent = `${state.exp} XP`;
         document.getElementById('exp-fill').style.width = `${progressPercent}%`;
         document.getElementById('current-level').textContent = state.level;
-        document.getElementById('level-progress').textContent = `${expInCurrentLevel}/${state.expToNextLevel}`;
+        document.getElementById('level-progress').textContent = `${state.exp}/${state.expToNextLevel}`;
         
         // Save state
         vscode.setState(state);
@@ -622,13 +631,12 @@
             state.expToNextLevel = message.expToNextLevel;
             
             // Update UI
-            const expInCurrentLevel = state.exp % state.expToNextLevel;
-            const progressPercent = (expInCurrentLevel / state.expToNextLevel) * 100;
+            const progressPercent = (state.exp / state.expToNextLevel) * 100;
             
             document.getElementById('exp-value').textContent = `${state.exp} XP`;
             document.getElementById('exp-fill').style.width = `${progressPercent}%`;
             document.getElementById('current-level').textContent = state.level;
-            document.getElementById('level-progress').textContent = `${expInCurrentLevel}/${state.expToNextLevel}`;
+            document.getElementById('level-progress').textContent = `${state.exp}/${state.expToNextLevel}`;
             
             // Save to webview state
             vscode.setState(state);
@@ -638,14 +646,17 @@
 
       // Initialize exp bar from state
       if (state.exp !== undefined) {
-        const level = Math.floor(state.exp / state.expToNextLevel) + 1;
-        const expInCurrentLevel = state.exp % state.expToNextLevel;
-        const progressPercent = (expInCurrentLevel / state.expToNextLevel) * 100;
+        // Calculate XP needed for current level if not set
+        if (!state.expToNextLevel) {
+          state.expToNextLevel = Math.floor(100 * Math.pow(1.5, state.level - 1));
+        }
+        
+        const progressPercent = (state.exp / state.expToNextLevel) * 100;
         
         document.getElementById('exp-value').textContent = `${state.exp} XP`;
         document.getElementById('exp-fill').style.width = `${progressPercent}%`;
         document.getElementById('current-level').textContent = state.level || 1;
-        document.getElementById('level-progress').textContent = `${expInCurrentLevel}/${state.expToNextLevel}`;
+        document.getElementById('level-progress').textContent = `${state.exp}/${state.expToNextLevel}`;
       }
     })();
   </script>
