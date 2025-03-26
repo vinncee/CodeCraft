@@ -1,6 +1,6 @@
 CodeCraft - AI-Powered "Rubber Duck Debugging" on Steroids 🦆💡
 
-CodeCraft is an AI-powered conversational mentor designed to help users improve their programming skills by guiding them through problem-solving rather than simply providing answers. By using Socratic questioning, visual metaphors, and gamified debugging techniques, CodeCraft teaches debugging, design, and computational thinking. It's like having an interactive, AI-driven mentor that helps you solve problems and develop critical thinking skills! 🧠
+CodeCraft is an AI-powered conversational mentor extension in VSCODE designed to help users improve their programming skills by guiding them through problem-solving rather than simply providing answers. By using Socratic questioning, visual metaphors, and gamified debugging techniques, CodeCraft teaches debugging, design, and computational thinking. It's like having an interactive, AI-driven mentor that helps you solve problems and develop critical thinking skills! 🧠
 
 Features 🌟
 1. Explain Your Problem 🤔
