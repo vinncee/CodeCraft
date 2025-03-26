@@ -2,6 +2,21 @@ import * as vscode from "vscode"
 import * as fs from "fs"
 import { AIService, ResponseMode } from "./ai-service"
 
+// Define weekly goals interface
+interface WeeklyGoal {
+  id: string
+  name: string
+  target: number
+  current: number
+  lastReset: string // ISO date string
+}
+
+interface Activity {
+  date: string
+  title: string
+  description: string
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("AI Coding Mentor is now active!")
 
@@ -75,6 +90,8 @@ class AIMentorPanel {
   private _userLevel = 1
   private _expToNextLevel = 100
   private _context: vscode.ExtensionContext
+  private _weeklyGoals: WeeklyGoal[] = []
+  private _activities: Activity[] = []
 
   public static createOrShow(extensionUri: vscode.Uri, aiService: AIService, context: vscode.ExtensionContext) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
@@ -117,6 +134,12 @@ class AIMentorPanel {
     // Calculate XP needed for next level based on current level
     this._expToNextLevel = Math.floor(100 * Math.pow(1.5, this._userLevel - 1))
 
+    // Load weekly goals or initialize default ones
+    this._loadWeeklyGoals()
+
+    // Load activities
+    this._loadActivities()
+
     // Set the webview's initial html content
     this._update()
 
@@ -149,11 +172,115 @@ class AIMentorPanel {
           case "updateExperience":
             this._updateExperience(message.exp, message.level)
             return
+          case "updateGoalProgress":
+            this._updateGoalProgress(message.goalId, message.increment)
+            return
+          case "resetWeeklyGoals":
+            this._resetWeeklyGoals()
+            return
+          case "recordActivity":
+            this._recordActivity(message.title, message.description)
+            return
         }
       },
       null,
       this._disposables,
     )
+  }
+
+  private _loadActivities() {
+    // Get stored activities or initialize empty array
+    const storedActivities = this._context.globalState.get<Activity[]>("codecraft.activities")
+
+    if (storedActivities && storedActivities.length > 0) {
+      this._activities = storedActivities
+    } else {
+      this._activities = []
+    }
+  }
+
+  private _saveActivities() {
+    this._context.globalState.update("codecraft.activities", this._activities)
+  }
+
+  private _recordActivity(title: string, description: string) {
+    const newActivity: Activity = {
+      date: new Date().toISOString(),
+      title: title,
+      description: description,
+    }
+
+    this._activities.unshift(newActivity) // Add to the beginning
+    if (this._activities.length > 10) {
+      this._activities.pop() // Keep only the latest 10 activities
+    }
+    this._saveActivities()
+
+    // Send updated activities to webview
+    this._panel.webview.postMessage({
+      command: "updateActivities",
+      activities: this._activities,
+    })
+  }
+
+  private _loadWeeklyGoals() {
+    // Get stored goals or create default ones if none exist
+    const storedGoals = this._context.globalState.get<WeeklyGoal[]>("codecraft.weeklyGoals")
+
+    if (storedGoals && storedGoals.length > 0) {
+      this._weeklyGoals = storedGoals
+
+      // Check if goals need to be reset (weekly)
+      const now = new Date()
+      const lastReset = new Date(this._weeklyGoals[0].lastReset)
+      const daysSinceReset = Math.floor((now.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24))
+
+      // Reset goals if it's been more than 7 days
+      if (daysSinceReset >= 7) {
+        this._resetWeeklyGoals()
+      }
+    } else {
+      // Create default goals
+      const now = new Date().toISOString()
+      this._weeklyGoals = [
+        { id: "learning", name: "Learning Progress", target: 100, current: 0, lastReset: now },
+        { id: "challenges", name: "Challenges Completed", target: 5, current: 0, lastReset: now },
+      ]
+      this._saveWeeklyGoals()
+    }
+  }
+
+  private _saveWeeklyGoals() {
+    this._context.globalState.update("codecraft.weeklyGoals", this._weeklyGoals)
+  }
+
+  private _resetWeeklyGoals() {
+    const now = new Date().toISOString()
+    this._weeklyGoals.forEach((goal) => {
+      goal.current = 0
+      goal.lastReset = now
+    })
+    this._saveWeeklyGoals()
+
+    // Send updated goals to webview
+    this._panel.webview.postMessage({
+      command: "updateWeeklyGoals",
+      goals: this._weeklyGoals,
+    })
+  }
+
+  private _updateGoalProgress(goalId: string, increment: number) {
+    const goal = this._weeklyGoals.find((g) => g.id === goalId)
+    if (goal) {
+      goal.current = Math.min(goal.current + increment, goal.target)
+      this._saveWeeklyGoals()
+
+      // Send updated goals to webview
+      this._panel.webview.postMessage({
+        command: "updateWeeklyGoals",
+        goals: this._weeklyGoals,
+      })
+    }
   }
 
   public reveal() {
@@ -206,6 +333,12 @@ class AIMentorPanel {
           command: "receiveMessage",
           message: response,
         })
+
+        // Record activity
+        this._recordActivity("Error Explained", `Explained error: ${errorMessage}`)
+
+        // Update learning progress goal
+        this._updateGoalProgress("learning", 5)
       }
     }
   }
@@ -232,6 +365,12 @@ class AIMentorPanel {
       command: "receiveMessage",
       message: response,
     })
+
+    // Record activity
+    this._recordActivity("Sent Message", `Sent message: ${text}`)
+
+    // Update learning progress goal
+    this._updateGoalProgress("learning", 2)
   }
 
   private _toggleMode(mode: string) {
@@ -270,18 +409,34 @@ class AIMentorPanel {
     await this._context.globalState.update("codecraft.userExp", this._userExp)
     await this._context.globalState.update("codecraft.userLevel", this._userLevel)
     await this._context.globalState.update("codecraft.expToNextLevel", this._expToNextLevel)
+
+    // Update learning progress goal when gaining experience
+    this._updateGoalProgress("learning", 1)
   }
 
   private _update() {
     const webview = this._panel.webview
     this._panel.title = "AI Coding Mentor"
     this._panel.webview.html = this._getHtmlForWebview(webview)
+
     // Send initial experience data
     this._panel.webview.postMessage({
       command: "initExperience",
       exp: this._userExp,
       level: this._userLevel,
       expToNextLevel: this._expToNextLevel,
+    })
+
+    // Send initial weekly goals data
+    this._panel.webview.postMessage({
+      command: "updateWeeklyGoals",
+      goals: this._weeklyGoals,
+    })
+
+    // Send initial activities data
+    this._panel.webview.postMessage({
+      command: "updateActivities",
+      activities: this._activities,
     })
   }
 

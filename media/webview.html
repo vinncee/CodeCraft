@@ -68,20 +68,37 @@
       </div>
       
       <div class="progress-container">
-        <h3>Weekly Goals</h3>
-        <div class="progress-label">
-          <span>Learning Progress</span>
-          <span>70%</span>
+        <div class="progress-header">
+          <h3>Weekly Goals</h3>
+          <button id="reset-goals-btn" class="reset-goals-btn" title="Reset weekly goals">
+            <i class="codicon codicon-refresh"></i>
+          </button>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 70%"></div>
-        </div>
-        <div class="progress-label">
-          <span>Challenges Completed</span>
-          <span>3/5</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 60%"></div>
+        <div id="weekly-goals">
+          <!-- Weekly goals will be populated dynamically -->
+          <div class="goal-item" data-goal-id="learning">
+            <div class="progress-label">
+              <span>Learning Progress</span>
+              <span class="goal-progress">0/100</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="goal-item" data-goal-id="challenges">
+            <div class="progress-label">
+              <span>Challenges Completed</span>
+              <span class="goal-progress">0/5</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="goal-actions">
+              <button class="goal-increment-btn" data-goal-id="challenges">
+                <i class="codicon codicon-add"></i> Complete Challenge
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
@@ -89,16 +106,16 @@
     <!-- Main content area -->
     <main class="main-content">
       <div class="tabs">
-        <button class="tab-button active" data-tab="chat">
+        <button class="tab-button" data-tab="chat">
           <i class="codicon codicon-comment"></i> Chat
         </button>
-        <button class="tab-button" data-tab="journal">
+        <button class="tab-button active" data-tab="journal">
           <i class="codicon codicon-book"></i> Learning Journal
         </button>
       </div>
 
       <!-- Chat tab content -->
-      <div class="tab-content active" id="chat-tab">
+      <div class="tab-content" id="chat-tab">
         <div class="chat-container">
           <div id="api-key-warning" class="api-key-warning hidden">
             <p><i class="codicon codicon-warning"></i> Hugging Face API token not set. Please set your API token to use the AI features.</p>
@@ -126,7 +143,7 @@
             <div class="mode-toggle">
               <span>Response Mode:</span>
               <div class="toggle-container">
-                <button class="toggle-button active" data-mode="text">
+                <button class="toggle-button" data-mode="text">
                   <i class="codicon codicon-text-size"></i> Text Guide
                 </button>
                 <button class="toggle-button" data-mode="visual">
@@ -174,7 +191,7 @@
               <button class="socratic-button" data-level="strict">
                 <i class="codicon codicon-question"></i> Strict
               </button>
-              <button class="socratic-button active" data-level="balanced">
+              <button class="socratic-button" data-level="balanced">
                 <i class="codicon codicon-combine"></i> Balanced
               </button>
               <button class="socratic-button" data-level="flexible">
@@ -208,7 +225,7 @@
       </div>
 
       <!-- Learning Journal tab content -->
-      <div class="tab-content" id="journal-tab">
+      <div class="tab-content active" id="journal-tab">
         <div class="journal-container">
           <div class="journal-header">
             <h2>Learning Analytics</h2>
@@ -224,44 +241,26 @@
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-title">Errors Resolved</div>
-              <div class="metric-value">12 <span class="trend up">↑ 40%</span></div>
+              <div class="metric-value" id="errors-resolved">0</div>
             </div>
             <div class="metric-card">
               <div class="metric-title">Concepts Learned</div>
-              <div class="metric-value">8 <span class="trend up">↑ 25%</span></div>
+              <div class="metric-value" id="concepts-learned">0</div>
             </div>
             <div class="metric-card">
               <div class="metric-title">Practice Time</div>
-              <div class="metric-value">5.2h <span class="trend up">↑ 15%</span></div>
+              <div class="metric-value" id="practice-time">0h</div>
             </div>
             <div class="metric-card">
               <div class="metric-title">Code Quality</div>
-              <div class="metric-value">B+ <span class="trend up">↑ 10%</span></div>
+              <div class="metric-value" id="code-quality">N/A</div>
             </div>
           </div>
 
           <div class="timeline">
             <h3>Recent Activity</h3>
-            <div class="timeline-item">
-              <div class="timeline-date">Today, 10:32 AM</div>
-              <div class="timeline-content">
-                <div class="timeline-title">Learned about Async/Await</div>
-                <div class="timeline-description">Discussed JavaScript asynchronous programming patterns</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-date">Yesterday, 3:45 PM</div>
-              <div class="timeline-content">
-                <div class="timeline-title">Fixed TypeError in React Component</div>
-                <div class="timeline-description">Resolved issue with props validation in functional component</div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-date">May 15, 2:20 PM</div>
-              <div class="timeline-content">
-                <div class="timeline-title">Completed Array Methods Challenge</div>
-                <div class="timeline-description">Successfully implemented map, filter, and reduce functions</div>
-              </div>
+            <div id="timeline-items">
+              <!-- Timeline items will be populated dynamically -->
             </div>
           </div>
 
@@ -314,6 +313,15 @@
       const themeDropdownBtn = document.getElementById('theme-dropdown-btn');
       const themeOptions = document.querySelectorAll('.theme-option');
       const currentThemeText = document.getElementById('current-theme');
+      const resetGoalsBtn = document.getElementById('reset-goals-btn');
+      const goalIncrementBtns = document.querySelectorAll('.goal-increment-btn');
+      const weeklyGoalsContainer = document.getElementById('weekly-goals');
+      const timelineItems = document.getElementById('timeline-items');
+      const timeFilter = document.getElementById('time-filter');
+      const errorsResolved = document.getElementById('errors-resolved');
+      const conceptsLearned = document.getElementById('concepts-learned');
+      const practiceTime = document.getElementById('practice-time');
+      const codeQuality = document.getElementById('code-quality');
       
       // Initialize with stored state
       const state = vscode.getState() || { 
@@ -324,7 +332,9 @@
         exp: 0,
         level: 1,
         expToNextLevel: 100,
-        theme: 'default'
+        theme: 'default',
+        weeklyGoals: [],
+        activities: []
       };
       
       // Apply saved theme on load
@@ -447,6 +457,9 @@
           exp: state.exp,
           level: state.level
         });
+        
+        // Update learning progress goal
+        updateGoalProgress('learning', 1);
       }
 
       // Apply theme
@@ -463,6 +476,175 @@
         // Save theme in state
         state.theme = themeName;
         vscode.setState(state);
+      }
+      
+      // Update weekly goals UI
+      function updateWeeklyGoalsUI(goals) {
+        state.weeklyGoals = goals;
+        vscode.setState(state);
+        
+        goals.forEach(goal => {
+          const goalElement = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
+          if (goalElement) {
+            const progressLabel = goalElement.querySelector('.goal-progress');
+            const progressFill = goalElement.querySelector('.progress-fill');
+            
+            if (progressLabel) {
+              progressLabel.textContent = `${goal.current}/${goal.target}`;
+            }
+            
+            if (progressFill) {
+              const percentage = Math.min((goal.current / goal.target) * 100, 100);
+              progressFill.style.width = `${percentage}%`;
+              
+              // Add completed class if goal is met
+              if (goal.current >= goal.target) {
+                goalElement.classList.add('goal-completed');
+              } else {
+                goalElement.classList.remove('goal-completed');
+              }
+            }
+          }
+        });
+      }
+      
+      // Update goal progress
+      function updateGoalProgress(goalId, increment) {
+        vscode.postMessage({
+          command: 'updateGoalProgress',
+          goalId: goalId,
+          increment: increment
+        });
+      }
+      
+      // Reset weekly goals
+      function resetWeeklyGoals() {
+        vscode.postMessage({
+          command: 'resetWeeklyGoals'
+        });
+      }
+      
+      // Function to display activities
+      function displayActivities(activities, filter = 'all') {
+        timelineItems.innerHTML = '';
+        
+        // Filter activities by time range
+        let filteredActivities = activities;
+        if (filter === 'week') {
+          filteredActivities = activities.filter(activity => {
+            const activityDate = new Date(activity.date);
+            const now = new Date();
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+            return activityDate >= startOfWeek;
+          });
+        } else if (filter === 'month') {
+          filteredActivities = activities.filter(activity => {
+            const activityDate = new Date(activity.date);
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            return activityDate >= startOfMonth;
+          });
+        }
+        
+        // Add each activity to the timeline
+        filteredActivities.forEach(activity => {
+          const activityDate = new Date(activity.date).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          
+          const timelineItem = document.createElement('div');
+          timelineItem.className = 'timeline-item';
+          timelineItem.innerHTML = `
+            <div class="timeline-date">${activityDate}</div>
+            <div class="timeline-content">
+              <div class="timeline-title">${activity.title}</div>
+              <div class="timeline-description">${activity.description}</div>
+            </div>
+          `;
+          timelineItems.appendChild(timelineItem);
+        });
+        
+        // Update metrics
+        updateMetrics(activities);
+      }
+      
+      // Function to update metrics
+      function updateMetrics(activities) {
+        let errors = 0;
+        let concepts = 0;
+        
+        activities.forEach(activity => {
+          if (activity.title === 'Error Explained') {
+            errors++;
+          } else if (activity.title === 'Sent Message') {
+            concepts++;
+          }
+        });
+        
+        errorsResolved.textContent = errors.toString();
+        conceptsLearned.textContent = concepts.toString();
+        practiceTime.textContent = 'N/A';
+        codeQuality.textContent = 'N/A';
+      }
+      
+      // Apply theme
+      function applyTheme(themeName) {
+        // Remove all theme classes
+        document.body.classList.remove('theme-default', 'theme-ocean', 'theme-forest', 'theme-sunset', 'theme-midnight');
+        
+        // Add selected theme class
+        document.body.classList.add(`theme-${themeName}`);
+        
+        // Update current theme text
+        currentThemeText.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+        
+        // Save theme in state
+        state.theme = themeName;
+        vscode.setState(state);
+      }
+      
+      // Update weekly goals UI
+      function updateWeeklyGoalsUI(goals) {
+        state.weeklyGoals = goals;
+        vscode.setState(state);
+        
+        goals.forEach(goal => {
+          const goalElement = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
+          if (goalElement) {
+            const progressLabel = goalElement.querySelector('.goal-progress');
+            const progressFill = goalElement.querySelector('.progress-fill');
+            
+            if (progressLabel) {
+              progressLabel.textContent = `${goal.current}/${goal.target}`;
+            }
+            
+            if (progressFill) {
+              const percentage = Math.min((goal.current / goal.target) * 100, 100);
+              progressFill.style.width = `${percentage}%`;
+              
+              // Add completed class if goal is met
+              if (goal.current >= goal.target) {
+                goalElement.classList.add('goal-completed');
+              } else {
+                goalElement.classList.remove('goal-completed');
+              }
+            }
+          }
+        });
+      }
+      
+      // Update goal progress
+      function updateGoalProgress(goalId, increment) {
+        vscode.postMessage({
+          command: 'updateGoalProgress',
+          goalId: goalId,
+          increment: increment
+        });
+      }
+      
+      // Reset weekly goals
+      function resetWeeklyGoals() {
+        vscode.postMessage({
+          command: 'resetWeeklyGoals'
+        });
       }
       
       // Event Listeners
@@ -487,33 +669,24 @@
         });
       });
       
-      // Theme dropdown toggle
-      themeDropdownBtn.addEventListener('click', () => {
-        const dropdownContent = themeDropdownBtn.nextElementSibling;
-        dropdownContent.classList.toggle('show');
+      // Reset goals button
+      resetGoalsBtn.addEventListener('click', () => {
+        resetWeeklyGoals();
       });
       
-      // Close dropdown when clicking outside
-      window.addEventListener('click', (e) => {
-        if (!e.target.matches('.dropdown-button') && !e.target.matches('.codicon-chevron-down')) {
-          const dropdowns = document.querySelectorAll('.dropdown-content');
-          dropdowns.forEach(dropdown => {
-            if (dropdown.classList.contains('show')) {
-              dropdown.classList.remove('show');
-            }
-          });
-        }
-      });
-      
-      // Theme selection
-      themeOptions.forEach(option => {
-        option.addEventListener('click', () => {
-          const themeName = option.getAttribute('data-theme');
-          applyTheme(themeName);
-          
-          // Close dropdown
-          option.closest('.dropdown-content').classList.remove('show');
+      // Goal increment buttons
+      goalIncrementBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const goalId = btn.getAttribute('data-goal-id');
+          if (goalId) {
+            updateGoalProgress(goalId, 1);
+          }
         });
+      });
+      
+      // Time filter
+      timeFilter.addEventListener('change', () => {
+        displayActivities(state.activities, timeFilter.value);
       });
       
       // Tab switching
@@ -641,6 +814,18 @@
             // Save to webview state
             vscode.setState(state);
             break;
+            
+          case 'updateWeeklyGoals':
+            // Update weekly goals UI
+            updateWeeklyGoalsUI(message.goals);
+            break;
+            
+          case 'updateActivities':
+            // Update activities UI
+            state.activities = message.activities;
+            vscode.setState(state);
+            displayActivities(state.activities, timeFilter.value);
+            break;
         }
       });
 
@@ -657,6 +842,11 @@
         document.getElementById('exp-fill').style.width = `${progressPercent}%`;
         document.getElementById('current-level').textContent = state.level || 1;
         document.getElementById('level-progress').textContent = `${state.exp}/${state.expToNextLevel}`;
+      }
+      
+      // Initialize activities UI
+      if (state.activities) {
+        displayActivities(state.activities, timeFilter.value);
       }
     })();
   </script>

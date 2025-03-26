@@ -237,10 +237,35 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .progress-container h3 {
   font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 1rem 0;
+  margin: 0;
+}
+
+.reset-goals-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.reset-goals-btn:hover {
+  color: var(--primary-color);
+  background-color: rgba(77, 132, 255, 0.1);
 }
 
 .progress-label {
@@ -263,6 +288,48 @@ body {
   background-color: var(--primary-color);
   border-radius: 4px;
   transition: width var(--transition-normal);
+}
+
+/* Goal Item */
+.goal-item {
+  margin-bottom: 1.25rem;
+}
+
+.goal-item:last-child {
+  margin-bottom: 0;
+}
+
+.goal-item.goal-completed .progress-fill {
+  background-color: var(--success-color);
+}
+
+.goal-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.goal-increment-btn {
+  background-color: var(--light-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all var(--transition-fast);
+}
+
+.goal-increment-btn:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.goal-increment-btn i {
+  font-size: 0.9rem;
 }
 
 /* Main Content */
