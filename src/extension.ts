@@ -17,6 +17,17 @@ interface Activity {
   description: string
 }
 
+// Define achievement interface
+interface Achievement {
+  id: string
+  title: string
+  description: string
+  category: string
+  icon: string
+  unlockedAt: string | null
+  isNew: boolean
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("AI Coding Mentor is now active!")
 
@@ -68,9 +79,20 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   // Track diagnostics changes to show/hide the "Explain This Error" button
-  vscode.languages.onDidChangeDiagnostics(() => {
+  vscode.languages.onDidChangeDiagnostics((e) => {
     if (AIMentorPanel.currentPanel) {
       AIMentorPanel.currentPanel.updateDiagnostics()
+    }
+  })
+
+  // Listen for text document changes to analyze code for achievements
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    if (
+      AIMentorPanel.currentPanel &&
+      event.document.languageId.match(/javascript|typescript|python|java|csharp|cpp|go|rust|php/)
+    ) {
+      const code = event.document.getText()
+      AIMentorPanel.currentPanel.analyzeCodeForAchievements(code)
     }
   })
 }
@@ -92,6 +114,7 @@ class AIMentorPanel {
   private _context: vscode.ExtensionContext
   private _weeklyGoals: WeeklyGoal[] = []
   private _activities: Activity[] = []
+  private _achievements: Achievement[] = []
 
   public static createOrShow(extensionUri: vscode.Uri, aiService: AIService, context: vscode.ExtensionContext) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
@@ -139,6 +162,9 @@ class AIMentorPanel {
 
     // Load activities
     this._loadActivities()
+
+    this._loadAchievements()
+    this._checkForAchievements("login")
 
     // Set the webview's initial html content
     this._update()
@@ -223,6 +249,300 @@ class AIMentorPanel {
     })
   }
 
+  private _loadAchievements() {
+    // Get stored achievements or initialize default ones
+    const storedAchievements = this._context.globalState.get<Achievement[]>("codecraft.achievements")
+
+    if (storedAchievements && storedAchievements.length > 0) {
+      this._achievements = storedAchievements
+    } else {
+      // Create default achievements (all locked initially)
+      this._achievements = [
+        {
+          id: "first-chat",
+          title: "Conversation Starter",
+          description: "Started your first conversation with the AI mentor",
+          category: "milestones",
+          icon: "comment",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "error-solver",
+          title: "Bug Squasher",
+          description: "Successfully resolved your first coding error",
+          category: "problem-solving",
+          icon: "debug",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "persistent-learner",
+          title: "Persistent Learner",
+          description: "Used the AI mentor for 5 consecutive days",
+          category: "learning",
+          icon: "calendar",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "question-master",
+          title: "Question Master",
+          description: "Asked 10 meaningful questions",
+          category: "learning",
+          icon: "question",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "loop-expert",
+          title: "Loop Expert",
+          description: "Demonstrated understanding of complex loop concepts",
+          category: "coding",
+          icon: "refresh",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "algorithm-apprentice",
+          title: "Algorithm Apprentice",
+          description: "Solved a complex algorithmic problem",
+          category: "problem-solving",
+          icon: "symbol-misc",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "debugging-detective",
+          title: "Debugging Detective",
+          description: "Resolved 5 different types of errors",
+          category: "problem-solving",
+          icon: "search",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "code-reviewer",
+          title: "Code Reviewer",
+          description: "Improved code quality based on AI suggestions",
+          category: "coding",
+          icon: "checklist",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "level-5",
+          title: "Rising Star",
+          description: "Reached level 5 in your learning journey",
+          category: "milestones",
+          icon: "star",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "level-10",
+          title: "Coding Prodigy",
+          description: "Reached level 10 in your learning journey",
+          category: "milestones",
+          icon: "star-full",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "weekly-goals",
+          title: "Goal Crusher",
+          description: "Completed all weekly goals",
+          category: "milestones",
+          icon: "check-all",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "night-owl",
+          title: "Night Owl",
+          description: "Coded with AI assistance after midnight",
+          category: "milestones",
+          icon: "watch",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "functional-wizard",
+          title: "Functional Wizard",
+          description: "Mastered functional programming concepts",
+          category: "coding",
+          icon: "symbol-function",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "oop-architect",
+          title: "OOP Architect",
+          description: "Demonstrated proficiency in object-oriented programming",
+          category: "coding",
+          icon: "symbol-class",
+          unlockedAt: null,
+          isNew: false,
+        },
+        {
+          id: "api-explorer",
+          title: "API Explorer",
+          description: "Successfully worked with external APIs",
+          category: "coding",
+          icon: "globe",
+          unlockedAt: null,
+          isNew: false,
+        },
+      ]
+      this._saveAchievements()
+    }
+  }
+
+  private _saveAchievements() {
+    this._context.globalState.update("codecraft.achievements", this._achievements)
+  }
+
+  private _unlockAchievement(achievementId: string) {
+    const achievement = this._achievements.find((a) => a.id === achievementId)
+    if (achievement && !achievement.unlockedAt) {
+      achievement.unlockedAt = new Date().toISOString()
+      achievement.isNew = true
+      this._saveAchievements()
+
+      // Send updated achievements to webview
+      this._panel.webview.postMessage({
+        command: "updateAchievements",
+        achievements: this._achievements,
+        newUnlock: achievementId,
+      })
+
+      // Record activity
+      this._recordActivity("Achievement Unlocked", `Unlocked achievement: ${achievement.title}`)
+    }
+  }
+
+  public analyzeCodeForAchievements(code: string) {
+    this._checkForAchievements("code-content", code)
+  }
+
+  private _checkForAchievements(trigger: string, data?: any) {
+    switch (trigger) {
+      case "chat":
+        // Check for first chat achievement
+        this._unlockAchievement("first-chat")
+
+        // Count meaningful questions (longer than 15 chars)
+        if (data && typeof data === "string" && data.length > 15) {
+          const questionCount = this._context.globalState.get<number>("codecraft.questionCount", 0) + 1
+          this._context.globalState.update("codecraft.questionCount", questionCount)
+
+          if (questionCount >= 10) {
+            this._unlockAchievement("question-master")
+          }
+        }
+        break
+
+      case "error":
+        // Unlock error solver achievement
+        this._unlockAchievement("error-solver")
+
+        // Track different error types
+        const errorTypes = this._context.globalState.get<string[]>("codecraft.errorTypes", [])
+        if (data && data.message && !errorTypes.includes(data.message.substring(0, 20))) {
+          errorTypes.push(data.message.substring(0, 20))
+          this._context.globalState.update("codecraft.errorTypes", errorTypes)
+
+          if (errorTypes.length >= 5) {
+            this._unlockAchievement("debugging-detective")
+          }
+        }
+        break
+
+      case "level":
+        // Check level-based achievements
+        if (data >= 5) {
+          this._unlockAchievement("level-5")
+        }
+        if (data >= 10) {
+          this._unlockAchievement("level-10")
+        }
+        break
+
+      case "goals":
+        // Check if all weekly goals are completed
+        if (this._weeklyGoals.every((goal) => goal.current >= goal.target)) {
+          this._unlockAchievement("weekly-goals")
+        }
+        break
+
+      case "time":
+        // Check time-based achievements
+        const now = new Date()
+        if (now.getHours() >= 0 && now.getHours() < 5) {
+          this._unlockAchievement("night-owl")
+        }
+        break
+
+      case "login":
+        // Check for consecutive days
+        const lastLogin = this._context.globalState.get<string>("codecraft.lastLogin", "")
+        const today = new Date().toISOString().split("T")[0]
+
+        if (lastLogin) {
+          const lastDate = new Date(lastLogin)
+          const yesterday = new Date()
+          yesterday.setDate(yesterday.getDate() - 1)
+
+          if (lastDate.toISOString().split("T")[0] === yesterday.toISOString().split("T")[0]) {
+            const streak = this._context.globalState.get<number>("codecraft.loginStreak", 0) + 1
+            this._context.globalState.update("codecraft.loginStreak", streak)
+
+            if (streak >= 5) {
+              this._unlockAchievement("persistent-learner")
+            }
+          } else if (lastDate.toISOString().split("T")[0] !== today) {
+            // Reset streak if not consecutive and not same day
+            this._context.globalState.update("codecraft.loginStreak", 1)
+          }
+        } else {
+          this._context.globalState.update("codecraft.loginStreak", 1)
+        }
+
+        this._context.globalState.update("codecraft.lastLogin", today)
+        break
+
+      case "code-content":
+        // Analyze code content for specific achievements
+        if (data && typeof data === "string") {
+          // Check for functional programming patterns
+          if (data.includes("map(") && data.includes("filter(") && data.includes("reduce(")) {
+            this._unlockAchievement("functional-wizard")
+          }
+
+          // Check for OOP patterns
+          if (
+            (data.includes("class ") || data.includes("interface ")) &&
+            (data.includes("extends ") || data.includes("implements ")) &&
+            data.includes("new ")
+          ) {
+            this._unlockAchievement("oop-architect")
+          }
+
+          // Check for API usage
+          if (
+            (data.includes("fetch(") ||
+              data.includes("axios.") ||
+              data.includes("http.") ||
+              data.includes("request(")) &&
+            (data.includes("api") || data.includes("API") || data.includes("endpoint"))
+          ) {
+            this._unlockAchievement("api-explorer")
+          }
+        }
+        break
+    }
+  }
+
   private _loadWeeklyGoals() {
     // Get stored goals or create default ones if none exist
     const storedGoals = this._context.globalState.get<WeeklyGoal[]>("codecraft.weeklyGoals")
@@ -280,6 +600,9 @@ class AIMentorPanel {
         command: "updateWeeklyGoals",
         goals: this._weeklyGoals,
       })
+
+      // Check for achievements
+      this._checkForAchievements("goals")
     }
   }
 
@@ -339,6 +662,7 @@ class AIMentorPanel {
 
         // Update learning progress goal
         this._updateGoalProgress("learning", 5)
+        this._checkForAchievements("error", errorInfo)
       }
     }
   }
@@ -371,6 +695,10 @@ class AIMentorPanel {
 
     // Update learning progress goal
     this._updateGoalProgress("learning", 2)
+
+    // Check for achievements
+    this._checkForAchievements("chat", text)
+    this._checkForAchievements("time")
   }
 
   private _toggleMode(mode: string) {
@@ -412,6 +740,7 @@ class AIMentorPanel {
 
     // Update learning progress goal when gaining experience
     this._updateGoalProgress("learning", 1)
+    this._checkForAchievements("level", level)
   }
 
   private _update() {
@@ -437,6 +766,12 @@ class AIMentorPanel {
     this._panel.webview.postMessage({
       command: "updateActivities",
       activities: this._activities,
+    })
+
+    // Send initial achievements data
+    this._panel.webview.postMessage({
+      command: "updateAchievements",
+      achievements: this._achievements,
     })
   }
 

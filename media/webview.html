@@ -112,6 +112,9 @@
         <button class="tab-button active" data-tab="journal">
           <i class="codicon codicon-book"></i> Learning Journal
         </button>
+        <button class="tab-button" data-tab="achievements">
+          <i class="codicon codicon-trophy"></i> Achievements
+        </button>
       </div>
 
       <!-- Chat tab content -->
@@ -291,6 +294,37 @@
           </div>
         </div>
       </div>
+
+      <!-- Achievements tab content -->
+      <div class="tab-content" id="achievements-tab">
+        <div class="achievements-container">
+          <div class="achievements-header">
+            <h2>Your Achievements</h2>
+            <div class="achievements-stats">
+              <div class="achievement-stat">
+                <span id="achievements-earned">0</span>
+                <span>Earned</span>
+              </div>
+              <div class="achievement-stat">
+                <span id="achievements-total">0</span>
+                <span>Total</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="achievements-categories">
+            <button class="category-button active" data-category="all">All</button>
+            <button class="category-button" data-category="coding">Coding Skills</button>
+            <button class="category-button" data-category="learning">Learning</button>
+            <button class="category-button" data-category="problem-solving">Problem Solving</button>
+            <button class="category-button" data-category="milestones">Milestones</button>
+          </div>
+
+          <div class="achievements-grid" id="achievements-grid">
+            <!-- Achievements will be populated dynamically -->
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -334,7 +368,8 @@
         expToNextLevel: 100,
         theme: 'default',
         weeklyGoals: [],
-        activities: []
+        activities: [],
+        achievements: []
       };
       
       // Apply saved theme on load
@@ -624,52 +659,6 @@
         }
       });
       
-      // Update weekly goals UI
-      function updateWeeklyGoalsUI(goals) {
-        state.weeklyGoals = goals;
-        vscode.setState(state);
-        
-        goals.forEach(goal => {
-          const goalElement = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
-          if (goalElement) {
-            const progressLabel = goalElement.querySelector('.goal-progress');
-            const progressFill = goalElement.querySelector('.progress-fill');
-            
-            if (progressLabel) {
-              progressLabel.textContent = `${goal.current}/${goal.target}`;
-            }
-            
-            if (progressFill) {
-              const percentage = Math.min((goal.current / goal.target) * 100, 100);
-              progressFill.style.width = `${percentage}%`;
-              
-              // Add completed class if goal is met
-              if (goal.current >= goal.target) {
-                goalElement.classList.add('goal-completed');
-              } else {
-                goalElement.classList.remove('goal-completed');
-              }
-            }
-          }
-        });
-      }
-      
-      // Update goal progress
-      function updateGoalProgress(goalId, increment) {
-        vscode.postMessage({
-          command: 'updateGoalProgress',
-          goalId: goalId,
-          increment: increment
-        });
-      }
-      
-      // Reset weekly goals
-      function resetWeeklyGoals() {
-        vscode.postMessage({
-          command: 'resetWeeklyGoals'
-        });
-      }
-      
       // Event Listeners
       sendButton.addEventListener('click', sendMessage);
       
@@ -849,6 +838,36 @@
             vscode.setState(state);
             displayActivities(state.activities, timeFilter.value);
             break;
+
+          case 'updateAchievements':
+            state.achievements = message.achievements;
+            vscode.setState(state);
+            
+            // Display achievements
+            const activeCategory = document.querySelector('.category-button.active')?.getAttribute('data-category') || 'all';
+            displayAchievements(message.achievements, activeCategory, message.newUnlock);
+            
+            // Show notification if there's a new unlock
+            if (message.newUnlock) {
+              const unlockedAchievement = message.achievements.find(a => a.id === message.newUnlock);
+              if (unlockedAchievement) {
+                const achievementNotif = document.createElement('div');
+                achievementNotif.className = 'level-up-notification';
+                achievementNotif.innerHTML = `
+                  <i class="codicon codicon-trophy"></i> Achievement Unlocked: ${unlockedAchievement.title}
+                `;
+                document.body.appendChild(achievementNotif);
+                
+                // Remove notification after animation
+                setTimeout(() => {
+                  achievementNotif.classList.add('fade-out');
+                  setTimeout(() => {
+                    document.body.removeChild(achievementNotif);
+                  }, 500);
+                }, 4000);
+              }
+            }
+            break;
         }
       });
 
@@ -871,6 +890,84 @@
       if (state.activities) {
         displayActivities(state.activities, timeFilter.value);
       }
+
+      // Initialize achievements UI
+      if (state.achievements) {
+        displayAchievements(state.achievements, 'all');
+      }
+      
+// Achievements handling
+function displayAchievements(achievements, category = 'all', newUnlockId = null) {
+  const achievementsGrid = document.getElementById('achievements-grid');
+  achievementsGrid.innerHTML = '';
+  
+  // Filter achievements by category
+  let filteredAchievements = achievements;
+  if (category !== 'all') {
+    filteredAchievements = achievements.filter(achievement => achievement.category === category);
+  }
+  
+  // Sort achievements: unlocked first (newest to oldest), then locked
+  filteredAchievements.sort((a, b) => {
+    if (a.unlockedAt && b.unlockedAt) {
+      return new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime();
+    }
+    if (a.unlockedAt) return -1;
+    if (b.unlockedAt) return 1;
+    return 0;
+  });
+  
+  // Update stats
+  const earnedCount = achievements.filter(a => a.unlockedAt).length;
+  document.getElementById('achievements-earned').textContent = earnedCount;
+  document.getElementById('achievements-total').textContent = achievements.length;
+  
+  // Add each achievement to the grid
+  filteredAchievements.forEach(achievement => {
+    const isUnlocked = !!achievement.unlockedAt;
+    const unlockedDate = isUnlocked ? new Date(achievement.unlockedAt).toLocaleDateString([], { 
+      year: 'numeric', month: 'short', day: 'numeric' 
+    }) : null;
+    
+    const achievementCard = document.createElement('div');
+    achievementCard.className = `achievement-card ${isUnlocked ? '' : 'locked'}`;
+    achievementCard.setAttribute('data-id', achievement.id);
+    
+    if (achievement.id === newUnlockId) {
+      achievementCard.classList.add('achievement-unlock-animation');
+    }
+    
+    achievementCard.innerHTML = `
+      ${isUnlocked && achievement.isNew ? '<div class="achievement-new-badge">NEW</div>' : ''}
+      ${!isUnlocked ? '<div class="achievement-lock"><i class="codicon codicon-lock"></i></div>' : ''}
+      <div class="achievement-icon">
+        <i class="codicon codicon-${achievement.icon}"></i>
+      </div>
+      <div class="achievement-content">
+        <div class="achievement-title">${achievement.title}</div>
+        <div class="achievement-description">${achievement.description}</div>
+        ${isUnlocked ? `<div class="achievement-date">Unlocked on ${unlockedDate}</div>` : ''}
+      </div>
+    `;
+    
+    achievementsGrid.appendChild(achievementCard);
+  });
+}
+
+// Category filter buttons
+const categoryButtons = document.querySelectorAll('.category-button');
+categoryButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const category = button.getAttribute('data-category');
+    
+    // Update active button
+    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    // Display filtered achievements
+    displayAchievements(state.achievements || [], category);
+  });
+});
     })();
   </script>
 </body>

@@ -359,5 +359,13 @@ Current mode: ${this.responseMode}`,
       }
     }
   }
+
+  public analyzeCode(code: string): void {
+    // This method is called to analyze code for achievements
+    // We'll just pass the code content to the extension for achievement checking
+    // No need to call Hugging Face API for this
+    // The extension will handle the achievement logic
+    // This is just a placeholder method to enable code analysis for achievements
+  }
 }
 
