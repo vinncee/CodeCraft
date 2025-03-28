@@ -585,21 +585,44 @@
         codeQuality.textContent = 'N/A';
       }
       
-      // Apply theme
-      function applyTheme(themeName) {
-        // Remove all theme classes
-        document.body.classList.remove('theme-default', 'theme-ocean', 'theme-forest', 'theme-sunset', 'theme-midnight');
-        
-        // Add selected theme class
-        document.body.classList.add(`theme-${themeName}`);
-        
-        // Update current theme text
-        currentThemeText.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-        
-        // Save theme in state
-        state.theme = themeName;
-        vscode.setState(state);
-      }
+      // Theme selection
+      themeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          const themeName = option.getAttribute('data-theme');
+          applyTheme(themeName);
+          
+          // Close dropdown
+          const dropdownContent = document.querySelector('.dropdown-content');
+          if (dropdownContent) {
+            dropdownContent.classList.remove('show');
+          }
+          
+          // Log theme change for debugging
+          console.log('Theme changed to:', themeName);
+        });
+      });
+      
+      // Theme dropdown toggle
+      themeDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.classList.toggle('show');
+        console.log('Dropdown toggled');
+      });
+      
+      // Close dropdown when clicking outside
+      window.addEventListener('click', (e) => {
+        if (!e.target.matches('.dropdown-button') && 
+            !e.target.matches('.codicon-chevron-down') && 
+            !e.target.closest('.dropdown-content')) {
+          const dropdowns = document.querySelectorAll('.dropdown-content');
+          dropdowns.forEach(dropdown => {
+            if (dropdown.classList.contains('show')) {
+              dropdown.classList.remove('show');
+            }
+          });
+        }
+      });
       
       // Update weekly goals UI
       function updateWeeklyGoalsUI(goals) {

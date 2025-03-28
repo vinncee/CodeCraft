@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   // Track diagnostics changes to show/hide the "Explain This Error" button
-  vscode.languages.onDidChangeDiagnostics((e) => {
+  vscode.languages.onDidChangeDiagnostics(() => {
     if (AIMentorPanel.currentPanel) {
       AIMentorPanel.currentPanel.updateDiagnostics()
     }
