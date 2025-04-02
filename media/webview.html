@@ -10,106 +10,13 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- Sidebar with badges -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2>Your Learning Journey</h2>
-      </div>
-      
-      <div class="badges-container">
-        <div class="badge completed" data-tooltip="Solved 5+ debugging challenges">
-          <div class="badge-icon">
-            <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-            </svg>
-          </div>
-          <span class="badge-name">Debug Hero</span>
-        </div>
-        <div class="badge completed" data-tooltip="Mastered loop concepts">
-          <div class="badge-icon">
-            <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-            </svg>
-          </div>
-          <span class="badge-name">Loop Ninja</span>
-        </div>
-        <div class="badge completed" data-tooltip="Completed API integration exercises">
-          <div class="badge-icon">
-            <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-            </svg>
-          </div>
-          <span class="badge-name">API Master</span>
-        </div>
-        <div class="badge completed" data-tooltip="Demonstrated OOP principles">
-          <div class="badge-icon">
-            <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-            </svg>
-          </div>
-          <span class="badge-name">OOP Wizard</span>
-        </div>
-        <div class="badge" data-tooltip="Complete 3 test-driven exercises to unlock">
-          <div class="badge-icon">
-            <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
-            </svg>
-          </div>
-          <span class="badge-name">Test Champion</span>
-        </div>
-        <div class="badge" data-tooltip="Complete 5 algorithm challenges to unlock">
-          <div class="badge-icon">
-            <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
-            </svg>
-          </div>
-          <span class="badge-name">Algo Expert</span>
-        </div>
-      </div>
-      
-      <div class="progress-container">
-        <div class="progress-header">
-          <h3>Weekly Goals</h3>
-          <button id="reset-goals-btn" class="reset-goals-btn" title="Reset weekly goals">
-            <i class="codicon codicon-refresh"></i>
-          </button>
-        </div>
-        <div id="weekly-goals">
-          <!-- Weekly goals will be populated dynamically -->
-          <div class="goal-item" data-goal-id="learning">
-            <div class="progress-label">
-              <span>Learning Progress</span>
-              <span class="goal-progress">0/100</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 0%"></div>
-            </div>
-          </div>
-          <div class="goal-item" data-goal-id="challenges">
-            <div class="progress-label">
-              <span>Challenges Completed</span>
-              <span class="goal-progress">0/5</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 0%"></div>
-            </div>
-            <div class="goal-actions">
-              <button class="goal-increment-btn" data-goal-id="challenges">
-                <i class="codicon codicon-add"></i> Complete Challenge
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
-
     <!-- Main content area -->
     <main class="main-content">
       <div class="tabs">
-        <button class="tab-button" data-tab="chat">
+        <button class="tab-button active" data-tab="chat">
           <i class="codicon codicon-comment"></i> Chat
         </button>
-        <button class="tab-button active" data-tab="journal">
+        <button class="tab-button" data-tab="journal">
           <i class="codicon codicon-book"></i> Learning Journal
         </button>
         <button class="tab-button" data-tab="achievements">
@@ -118,7 +25,7 @@
       </div>
 
       <!-- Chat tab content -->
-      <div class="tab-content" id="chat-tab">
+      <div class="tab-content active" id="chat-tab">
         <div class="chat-container">
           <div id="api-key-warning" class="api-key-warning hidden">
             <p><i class="codicon codicon-warning"></i> Hugging Face API token not set. Please set your API token to use the AI features.</p>
@@ -252,7 +159,7 @@
       </div>
 
       <!-- Learning Journal tab content -->
-      <div class="tab-content active" id="journal-tab">
+      <div class="tab-content" id="journal-tab">
         <div class="journal-container">
           <div class="journal-header">
             <h2>Learning Analytics</h2>
@@ -265,54 +172,149 @@
             </div>
           </div>
 
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-title">Errors Resolved</div>
-              <div class="metric-value" id="errors-resolved">0</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-title">Concepts Learned</div>
-              <div class="metric-value" id="concepts-learned">0</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-title">Practice Time</div>
-              <div class="metric-value" id="practice-time">0h</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-title">Code Quality</div>
-              <div class="metric-value" id="code-quality">N/A</div>
-            </div>
-          </div>
+          <div class="journal-sections">
+            <div class="journal-main">
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-title">Errors Resolved</div>
+                  <div class="metric-value" id="errors-resolved">0</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Concepts Learned</div>
+                  <div class="metric-value" id="concepts-learned">0</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Practice Time</div>
+                  <div class="metric-value" id="practice-time">0h</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Code Quality</div>
+                  <div class="metric-value" id="code-quality">N/A</div>
+                </div>
+              </div>
 
-          <div class="timeline">
-            <h3>Recent Activity</h3>
-            <div id="timeline-items">
-              <!-- Timeline items will be populated dynamically -->
-            </div>
-          </div>
+              <div class="timeline">
+                <h3>Recent Activity</h3>
+                <div id="timeline-items">
+                  <!-- Timeline items will be populated dynamically -->
+                </div>
+              </div>
 
-          <div class="study-plan">
-            <h3>Recommended Study Plan</h3>
-            <div class="checklist">
-              <div class="checklist-item">
-                <input type="checkbox" id="item1">
-                <label for="item1">Review Promise chaining vs async/await</label>
+              <div class="study-plan">
+                <h3>Recommended Study Plan</h3>
+                <div class="checklist">
+                  <div class="checklist-item">
+                    <input type="checkbox" id="item1">
+                    <label for="item1">Review Promise chaining vs async/await</label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="item2">
+                    <label for="item2">Practice error handling in asynchronous code</label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="item3" checked>
+                    <label for="item3">Complete the loop optimization exercise</label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="item4">
+                    <label for="item4">Learn about React useEffect cleanup functions</label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="item5">
+                    <label for="item5">Implement a basic unit test for your current project</label>
+                  </div>
+                </div>
               </div>
-              <div class="checklist-item">
-                <input type="checkbox" id="item2">
-                <label for="item2">Practice error handling in asynchronous code</label>
+            </div>
+
+            <div class="journal-sidebar">
+              <div class="learning-journey-section">
+                <h3>Your Learning Journey</h3>
+                <div class="badges-container">
+                  <div class="badge completed" data-tooltip="Solved 5+ debugging challenges">
+                    <div class="badge-icon">
+                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+                      </svg>
+                    </div>
+                    <span class="badge-name">Debug Hero</span>
+                  </div>
+                  <div class="badge completed" data-tooltip="Mastered loop concepts">
+                    <div class="badge-icon">
+                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+                      </svg>
+                    </div>
+                    <span class="badge-name">Loop Ninja</span>
+                  </div>
+                  <div class="badge completed" data-tooltip="Completed API integration exercises">
+                    <div class="badge-icon">
+                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+                      </svg>
+                    </div>
+                    <span class="badge-name">API Master</span>
+                  </div>
+                  <div class="badge completed" data-tooltip="Demonstrated OOP principles">
+                    <div class="badge-icon">
+                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+                      </svg>
+                    </div>
+                    <span class="badge-name">OOP Wizard</span>
+                  </div>
+                  <div class="badge" data-tooltip="Complete 3 test-driven exercises to unlock">
+                    <div class="badge-icon">
+                      <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                      </svg>
+                    </div>
+                    <span class="badge-name">Test Champion</span>
+                  </div>
+                  <div class="badge" data-tooltip="Complete 5 algorithm challenges to unlock">
+                    <div class="badge-icon">
+                      <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
+                        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                      </svg>
+                    </div>
+                    <span class="badge-name">Algo Expert</span>
+                  </div>
+                </div>
               </div>
-              <div class="checklist-item">
-                <input type="checkbox" id="item3" checked>
-                <label for="item3">Complete the loop optimization exercise</label>
-              </div>
-              <div class="checklist-item">
-                <input type="checkbox" id="item4">
-                <label for="item4">Learn about React useEffect cleanup functions</label>
-              </div>
-              <div class="checklist-item">
-                <input type="checkbox" id="item5">
-                <label for="item5">Implement a basic unit test for your current project</label>
+              
+              <div class="weekly-goals-section">
+                <div class="progress-header">
+                  <h3>Weekly Goals</h3>
+                  <button id="reset-goals-btn" class="reset-goals-btn" title="Reset weekly goals">
+                    <i class="codicon codicon-refresh"></i>
+                  </button>
+                </div>
+                <div id="weekly-goals">
+                  <!-- Weekly goals will be populated dynamically -->
+                  <div class="goal-item" data-goal-id="learning">
+                    <div class="progress-label">
+                      <span>Learning Progress</span>
+                      <span class="goal-progress">0/100</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="goal-item" data-goal-id="challenges">
+                    <div class="progress-label">
+                      <span>Challenges Completed</span>
+                      <span class="goal-progress">0/5</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="goal-actions">
+                      <button class="goal-increment-btn" data-goal-id="challenges">
+                        <i class="codicon codicon-add"></i> Complete Challenge
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
