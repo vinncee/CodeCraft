@@ -255,6 +255,8 @@ body {
 /* App Container */
 .app-container {
   display: flex;
+  width: 100%;
+  max-width: 100%;
   height: 100vh;
   overflow: hidden;
 }
@@ -468,6 +470,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
 }
 
 /* Tabs */
@@ -517,6 +520,7 @@ body {
 
 .tab-content.active {
   display: flex;
+  width: 100%;
 }
 
 /* Chat Container */
@@ -1009,7 +1013,10 @@ body {
 }
 
 /* Learning Journal */
-.journal-container {
+.journal-container,
+.achievements-container {
+  width: 100%;
+  max-width: 100%;
   padding: 1.5rem;
   height: 100%;
   overflow-y: auto;
@@ -1501,6 +1508,7 @@ body {
   display: flex;
   gap: 2rem;
   height: 100%;
+  width: 100%;
 }
 
 .journal-main {
@@ -1511,6 +1519,7 @@ body {
 
 .journal-sidebar {
   width: 300px;
+  min-width: 300px;
   background-color: var(--medium-bg);
   border-radius: var(--border-radius-md);
   padding: 1.5rem;
@@ -1563,6 +1572,7 @@ body {
 @media (max-width: 1024px) {
   .journal-sections {
     flex-direction: column;
+    width: 100%;
   }
 
   .journal-sidebar {
