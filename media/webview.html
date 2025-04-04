@@ -31,6 +31,14 @@
             <p><i class="codicon codicon-warning"></i> Hugging Face API token not set. Please set your API token to use the AI features.</p>
             <button id="set-api-key-btn">Set API Token</button>
           </div>
+
+          <div class="notification-banner success hidden" id="notification-banner">
+            <i class="codicon codicon-info"></i>
+            <span id="notification-message">This is a notification message</span>
+            <button class="icon-button" id="close-notification-btn">
+              <i class="codicon codicon-close"></i>
+            </button>
+          </div>
           
           <div class="messages">
             <div class="message ai">
@@ -134,8 +142,79 @@
             </div>
           </div>
 
+          <div class="code-snippets-panel hidden" id="code-snippets-panel">
+            <div class="snippets-header">
+              <h3>Code Snippets Library</h3>
+              <button id="close-snippets-btn" class="icon-button">
+                <i class="codicon codicon-close"></i>
+              </button>
+            </div>
+            <div class="snippets-search">
+              <input type="text" placeholder="Search snippets..." id="snippets-search-input">
+              <button class="icon-button" id="snippets-search-btn">
+                <i class="codicon codicon-search"></i>
+              </button>
+            </div>
+            <div class="snippets-list" id="snippets-list">
+              <!-- Snippets will be populated dynamically -->
+              <div class="snippet-item">
+                <div class="snippet-header">
+                  <span class="snippet-title">Array Sorting</span>
+                  <span class="snippet-language">JavaScript</span>
+                </div>
+                <pre class="snippet-code"><code>// Sort array of numbers
+const numbers = [3, 1, 4, 1, 5, 9];
+numbers.sort((a, b) => a - b);</code></pre>
+                <div class="snippet-actions">
+                  <button class="snippet-action-btn" title="Copy to clipboard">
+                    <i class="codicon codicon-copy"></i>
+                  </button>
+                  <button class="snippet-action-btn" title="Insert into message">
+                    <i class="codicon codicon-arrow-down"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="snippet-item">
+                <div class="snippet-header">
+                  <span class="snippet-title">Async/Await Example</span>
+                  <span class="snippet-language">JavaScript</span>
+                </div>
+                <pre class="snippet-code"><code>async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}</code></pre>
+                <div class="snippet-actions">
+                  <button class="snippet-action-btn" title="Copy to clipboard">
+                    <i class="codicon codicon-copy"></i>
+                  </button>
+                  <button class="snippet-action-btn" title="Insert into message">
+                    <i class="codicon codicon-arrow-down"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="snippets-footer">
+              <button id="add-snippet-btn" class="secondary-button">
+                <i class="codicon codicon-add"></i> Add New Snippet
+              </button>
+            </div>
+          </div>
+
           <!-- Make sure the icon is properly defined in the button -->
           <div class="input-container">
+            <div class="input-actions">
+              <button id="show-snippets-btn" class="icon-button" title="Code Snippets">
+                <i class="codicon codicon-library"></i>
+              </button>
+              <button id="show-keyboard-shortcuts-btn" class="icon-button" title="Keyboard Shortcuts">
+                <i class="codicon codicon-keyboard"></i>
+              </button>
+            </div>
             <textarea id="message-input" placeholder="Ask me anything about coding..."></textarea>
             <button id="send-button" title="Send message">
               <span class="arrow-up">↑</span>
@@ -172,6 +251,21 @@
             </div>
           </div>
 
+          <div class="quick-actions">
+            <button class="quick-action-btn" id="export-data-btn">
+              <i class="codicon codicon-cloud-download"></i> Export Learning Data
+            </button>
+            <button class="quick-action-btn" id="import-data-btn">
+              <i class="codicon codicon-cloud-upload"></i> Import Learning Data
+            </button>
+            <button class="quick-action-btn" id="clear-history-btn">
+              <i class="codicon codicon-clear-all"></i> Clear History
+            </button>
+            <button class="quick-action-btn" id="print-report-btn">
+              <i class="codicon codicon-file-pdf"></i> Generate Report
+            </button>
+          </div>
+
           <div class="journal-sections">
             <div class="journal-main">
               <div class="metrics-grid">
@@ -190,6 +284,13 @@
                 <div class="metric-card">
                   <div class="metric-title">Code Quality</div>
                   <div class="metric-value" id="code-quality">N/A</div>
+                </div>
+              </div>
+
+              <div class="learning-progress-chart">
+                <h3>Learning Progress Over Time</h3>
+                <div class="chart-container">
+                  <canvas id="learning-progress-chart"></canvas>
                 </div>
               </div>
 
@@ -354,6 +455,53 @@
     </main>
   </div>
 
+  <div class="keyboard-shortcuts-modal hidden" id="keyboard-shortcuts-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Keyboard Shortcuts</h3>
+        <button id="close-shortcuts-modal-btn" class="icon-button">
+          <i class="codicon codicon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+            <span class="shortcut-description">Send message</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>L</kbd></span>
+            <span class="shortcut-description">Clear conversation</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>S</kbd></span>
+            <span class="shortcut-description">Save conversation</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>B</kbd></span>
+            <span class="shortcut-description">Toggle code snippets panel</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>1</kbd></span>
+            <span class="shortcut-description">Switch to Chat tab</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>2</kbd></span>
+            <span class="shortcut-description">Switch to Learning Journal tab</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>3</kbd></span>
+            <span class="shortcut-description">Switch to Achievements tab</span>
+          </div>
+          <div class="shortcut-item">
+            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
+            <span class="shortcut-description">Show keyboard shortcuts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script nonce="{{nonce}}">
     (function() {
       const vscode = acquireVsCodeApi();
@@ -382,6 +530,15 @@
       const conceptsLearned = document.getElementById('concepts-learned');
       const practiceTime = document.getElementById('practice-time');
       const codeQuality = document.getElementById('code-quality');
+      const showSnippetsBtn = document.getElementById('show-snippets-btn');
+      const closeSnippetsBtn = document.getElementById('close-snippets-btn');
+      const codeSnippetsPanel = document.getElementById('code-snippets-panel');
+      const showKeyboardShortcutsBtn = document.getElementById('show-keyboard-shortcuts-btn');
+      const keyboardShortcutsModal = document.getElementById('keyboard-shortcuts-modal');
+      const closeShortcutsModalBtn = document.getElementById('close-shortcuts-modal-btn');
+      const notificationBanner = document.getElementById('notification-banner');
+      const notificationMessage = document.getElementById('notification-message');
+      const closeNotificationBtn = document.getElementById('close-notification-btn');
       
       // Initialize with stored state
       const state = vscode.getState() || { 
@@ -894,6 +1051,17 @@
               }
             }
             break;
+
+          case 'showNotification':
+            // Show notification banner
+            notificationMessage.textContent = message.text;
+            notificationBanner.classList.remove('hidden');
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+              notificationBanner.classList.add('hidden');
+            }, 5000);
+            break;
         }
       });
 
@@ -994,6 +1162,72 @@ categoryButtons.forEach(button => {
     displayAchievements(state.achievements || [], category);
   });
 });
+
+      // Show/hide code snippets panel
+      showSnippetsBtn.addEventListener('click', () => {
+        codeSnippetsPanel.classList.remove('hidden');
+      });
+      
+      closeSnippetsBtn.addEventListener('click', () => {
+        codeSnippetsPanel.classList.add('hidden');
+      });
+      
+      // Show/hide keyboard shortcuts modal
+      showKeyboardShortcutsBtn.addEventListener('click', () => {
+        keyboardShortcutsModal.classList.remove('hidden');
+      });
+      
+      closeShortcutsModalBtn.addEventListener('click', () => {
+        keyboardShortcutsModal.classList.add('hidden');
+      });
+      
+      closeNotificationBtn.addEventListener('click', () => {
+        notificationBanner.classList.add('hidden');
+      });
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey) {
+          switch (e.key) {
+            case 'Enter':
+              sendMessage();
+              break;
+            case 'l':
+              // Clear conversation logic here (if implemented)
+              break;
+            case 's':
+              // Save conversation logic here (if implemented)
+              break;
+            case 'b':
+              codeSnippetsPanel.classList.toggle('hidden');
+              break;
+            case '1':
+              // Switch to Chat tab
+              tabButtons.forEach(btn => btn.classList.remove('active'));
+              tabContents.forEach(content => content.classList.remove('active'));
+              document.querySelector('[data-tab="chat"]').classList.add('active');
+              document.getElementById('chat-tab').classList.add('active');
+              break;
+            case '2':
+              // Switch to Learning Journal tab
+              tabButtons.forEach(btn => btn.classList.remove('active'));
+              tabContents.forEach(content => content.classList.remove('active'));
+              document.querySelector('[data-tab="journal"]').classList.add('active');
+              document.getElementById('journal-tab').classList.add('active');
+              break;
+            case '3':
+              // Switch to Achievements tab
+              tabButtons.forEach(btn => btn.classList.remove('active'));
+              tabContents.forEach(content => content.classList.remove('active'));
+              document.querySelector('[data-tab="achievements"]').classList.add('active');
+              document.getElementById('achievements-tab').classList.add('active');
+              break;
+            case '/':
+              keyboardShortcutsModal.classList.remove('hidden');
+              break;
+          }
+        }
+      });
     })();
   </script>
 </body>
