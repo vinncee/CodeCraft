@@ -318,3 +318,102 @@ if (learningProgressChart) {
   }
 }
 
+// Add these functions to handle stats update
+
+// Define statCharts as a global variable to store chart references
+let learningStats = {}
+
+// Handle learning stats update
+function updateLearningStats(stats) {
+  learningStats = stats
+
+  // Update skill breakdown
+  if (stats.skills) {
+    const skillBars = document.querySelectorAll(".skill-item")
+    if (skillBars.length > 0) {
+      skillBars[0].querySelector(".skill-info span:last-child").textContent = `${stats.skills.javascript}%`
+      skillBars[0].querySelector(".skill-progress-bar").style.width = `${stats.skills.javascript}%`
+
+      skillBars[1].querySelector(".skill-info span:last-child").textContent = `${stats.skills.problemSolving}%`
+      skillBars[1].querySelector(".skill-progress-bar").style.width = `${stats.skills.problemSolving}%`
+
+      skillBars[2].querySelector(".skill-info span:last-child").textContent = `${stats.skills.debugging}%`
+      skillBars[2].querySelector(".skill-progress-bar").style.width = `${stats.skills.debugging}%`
+
+      skillBars[3].querySelector(".skill-info span:last-child").textContent = `${stats.skills.codeOrganization}%`
+      skillBars[3].querySelector(".skill-progress-bar").style.width = `${stats.skills.codeOrganization}%`
+    }
+  }
+
+  // Update streak
+  if (stats.streak) {
+    const streakDaysEl = document.querySelector(".streak-days")
+    if (streakDaysEl) {
+      streakDaysEl.textContent = stats.streak.currentStreak
+    }
+
+    // Update streak grid
+    const streakGrid = document.querySelector(".streak-grid")
+    if (streakGrid) {
+      const streakDays = streakGrid.querySelectorAll(".streak-day")
+      streakDays.forEach((day) => {
+        const date = day.getAttribute("data-date")
+        if (stats.streak.activeDays.includes(date)) {
+          day.classList.add("active")
+        } else {
+          day.classList.remove("active")
+        }
+      })
+    }
+  }
+
+  // Update error resolution
+  if (stats.errorResolution) {
+    const percentageEl = document.querySelector(".percentage")
+    if (percentageEl) {
+      percentageEl.textContent = `${stats.errorResolution.rate}%`
+    }
+
+    const circlePath = document.querySelector(".circle")
+    if (circlePath) {
+      circlePath.setAttribute("stroke-dasharray", `${stats.errorResolution.rate}, 100`)
+    }
+
+    const avgTimeEl = document.querySelector(".resolution-stat:first-child .stat-value")
+    if (avgTimeEl) {
+      avgTimeEl.textContent = `${stats.errorResolution.avgTime} min`
+    }
+
+    const errorsFixedEl = document.querySelector(".resolution-stat:last-child .stat-value")
+    if (errorsFixedEl) {
+      errorsFixedEl.textContent = stats.errorResolution.totalFixed
+    }
+  }
+
+  // Update active times
+  if (stats.activeTimes) {
+    const timeBars = document.querySelectorAll(".time-bar")
+    let i = 0
+    for (const [time, value] of Object.entries(stats.activeTimes)) {
+      if (i < timeBars.length) {
+        timeBars[i].style.height = `${value}%`
+        timeBars[i].setAttribute("data-time", time)
+        i++
+      }
+    }
+  }
+}
+
+// Add this to the event listener handling
+window.addEventListener("message", (event) => {
+  const message = event.data
+
+  switch (message.command) {
+    // Add this case
+    case "updateLearningStats":
+      updateLearningStats(message.stats)
+      break
+    // Other existing cases...
+  }
+})
+

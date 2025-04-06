@@ -164,6 +164,7 @@ class AIMentorPanel {
     this._loadActivities()
 
     this._loadAchievements()
+    this._loadLearningStats()
     this._checkForAchievements("login")
 
     // Set the webview's initial html content
@@ -207,11 +208,67 @@ class AIMentorPanel {
           case "recordActivity":
             this._recordActivity(message.title, message.description)
             return
+          case "updateLearningStats":
+            this._updateLearningStats(message.stats)
+            return
         }
       },
       null,
       this._disposables,
     )
+  }
+
+  // Add new methods to handle the stats data
+
+  // Add this after the _loadAchievements() method
+  private _loadLearningStats() {
+    // Get stored stats or initialize default values
+    const storedStats = this._context.globalState.get<any>("codecraft.learningStats")
+
+    if (storedStats) {
+      // Send stored stats to webview
+      this._panel.webview.postMessage({
+        command: "updateLearningStats",
+        stats: storedStats,
+      })
+    } else {
+      // Create default stats
+      const defaultStats = {
+        skills: {
+          javascript: 65,
+          problemSolving: 78,
+          debugging: 42,
+          codeOrganization: 55,
+        },
+        streak: {
+          currentStreak: 5,
+          lastActive: new Date().toISOString(),
+          activeDays: ["2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04", "2025-04-05"],
+        },
+        errorResolution: {
+          rate: 75,
+          avgTime: 14, // minutes
+          totalFixed: 23,
+        },
+        activeTimes: {
+          "9AM": 30,
+          "12PM": 40,
+          "3PM": 60,
+          "6PM": 100,
+          "9PM": 80,
+          "12AM": 35,
+        },
+      }
+
+      // Save default stats
+      this._context.globalState.update("codecraft.learningStats", defaultStats)
+
+      // Send default stats to webview
+      this._panel.webview.postMessage({
+        command: "updateLearningStats",
+        stats: defaultStats,
+      })
+    }
   }
 
   private _loadActivities() {
@@ -247,6 +304,16 @@ class AIMentorPanel {
       command: "updateActivities",
       activities: this._activities,
     })
+
+    // Update skill progress based on activity type
+    if (title === "Error Explained") {
+      // Update error resolution stats
+      const learningStats = this._context.globalState.get<any>("codecraft.learningStats") || {}
+      if (learningStats.errorResolution) {
+        learningStats.errorResolution.totalFixed += 1
+        this._context.globalState.update("codecraft.learningStats", learningStats)
+      }
+    }
   }
 
   private _loadAchievements() {
@@ -773,6 +840,10 @@ class AIMentorPanel {
       command: "updateAchievements",
       achievements: this._achievements,
     })
+
+    // Add this to the _update() method to send initial stats data
+    // Find the part where it sends initial data and add this line
+    this._loadLearningStats()
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -812,6 +883,18 @@ class AIMentorPanel {
         disposable.dispose()
       }
     }
+  }
+
+  // Add this method to update learning stats
+  private _updateLearningStats(stats: any) {
+    // Store updated stats
+    this._context.globalState.update("codecraft.learningStats", stats)
+
+    // Send updated stats to webview
+    this._panel.webview.postMessage({
+      command: "updateLearningStats",
+      stats: stats,
+    })
   }
 }
 

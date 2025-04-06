@@ -1966,3 +1966,233 @@ kbd {
   flex: 1;
 }
 
+/* Add these new styles for the stats section */
+.stat-card {
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.stat-header h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.stat-info {
+  color: var(--text-secondary);
+  cursor: help;
+}
+
+/* Skill Breakdown */
+.skill-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skill-item {
+  width: 100%;
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.skill-progress {
+  height: 6px;
+  background-color: var(--medium-bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.skill-progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+/* Learning Streak */
+.streak-calendar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.streak-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.streak-days {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.streak-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.streak-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.streak-day {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: var(--medium-bg);
+}
+
+.streak-day.active {
+  background-color: var(--primary-color);
+}
+
+/* Error Resolution Rate */
+.resolution-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resolution-chart {
+  width: 100px;
+  height: 100px;
+}
+
+.chart-donut {
+  width: 100%;
+  height: 100%;
+}
+
+.circular-chart {
+  display: block;
+  width: 100%;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: var(--medium-bg);
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  stroke: var(--primary-color);
+  animation: progress 1s ease-out forwards;
+}
+
+.percentage {
+  fill: var(--text-primary);
+  font-size: 0.4em;
+  text-anchor: middle;
+  font-weight: 600;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.resolution-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resolution-stat {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.stat-value {
+  font-weight: 500;
+}
+
+/* Active Times */
+.active-times {
+  padding-top: 0.5rem;
+}
+
+.time-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 60px;
+  margin-bottom: 0.5rem;
+}
+
+.time-bar {
+  width: 12px;
+  background: linear-gradient(to top, var(--primary-color), var(--exp-gradient-end));
+  border-radius: 2px 2px 0 0;
+  position: relative;
+}
+
+.time-bar:hover::after {
+  content: attr(data-time);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  margin-bottom: 5px;
+}
+
+.time-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.time-labels span {
+  width: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: rotate(-45deg);
+  transform-origin: center left;
+  margin-left: 6px;
+}
+

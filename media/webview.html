@@ -330,58 +330,139 @@ numbers.sort((a, b) => a - b);</code></pre>
 
             <div class="journal-sidebar">
               <div class="learning-journey-section">
-                <h3>Your Learning Journey</h3>
-                <div class="badges-container">
-                  <div class="badge completed" data-tooltip="Solved 5+ debugging challenges">
-                    <div class="badge-icon">
-                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-                      </svg>
-                    </div>
-                    <span class="badge-name">Debug Hero</span>
+                <h3>Learning Analytics</h3>
+                
+                <div class="stat-card">
+                  <div class="stat-header">
+                    <h4>Skill Breakdown</h4>
+                    <span class="stat-info" title="Your relative proficiency in different coding areas">
+                      <i class="codicon codicon-info"></i>
+                    </span>
                   </div>
-                  <div class="badge completed" data-tooltip="Mastered loop concepts">
-                    <div class="badge-icon">
-                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-                      </svg>
+                  <div class="skill-bars">
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>JavaScript</span>
+                        <span>65%</span>
+                      </div>
+                      <div class="skill-progress">
+                        <div class="skill-progress-bar" style="width: 65%"></div>
+                      </div>
                     </div>
-                    <span class="badge-name">Loop Ninja</span>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>Problem Solving</span>
+                        <span>78%</span>
+                      </div>
+                      <div class="skill-progress">
+                        <div class="skill-progress-bar" style="width: 78%"></div>
+                      </div>
+                    </div>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>Debugging</span>
+                        <span>42%</span>
+                      </div>
+                      <div class="skill-progress">
+                        <div class="skill-progress-bar" style="width: 42%"></div>
+                      </div>
+                      <div class="skill-item">
+                        <div class="skill-info">
+                          <span>Code Organization</span>
+                          <span>55%</span>
+                        </div>
+                        <div class="skill-progress">
+                          <div class="skill-progress-bar" style="width: 55%"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="badge completed" data-tooltip="Completed API integration exercises">
-                    <div class="badge-icon">
-                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-                      </svg>
+                  
+                  <div class="stat-card">
+                    <div class="stat-header">
+                      <h4>Learning Streak</h4>
+                      <span class="stat-info" title="Your consecutive days of learning">
+                        <i class="codicon codicon-info"></i>
+                      </span>
                     </div>
-                    <span class="badge-name">API Master</span>
+                    <div class="streak-calendar">
+                      <div class="streak-number">
+                        <span class="streak-days">5</span>
+                        <span class="streak-label">day streak</span>
+                      </div>
+                      <div class="streak-grid">
+                        <div class="streak-day active" data-date="2025-04-01"></div>
+                        <div class="streak-day active" data-date="2025-04-02"></div>
+                        <div class="streak-day active" data-date="2025-04-03"></div>
+                        <div class="streak-day active" data-date="2025-04-04"></div>
+                        <div class="streak-day active" data-date="2025-04-05"></div>
+                        <div class="streak-day" data-date="2025-04-06"></div>
+                        <div class="streak-day" data-date="2025-04-07"></div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="badge completed" data-tooltip="Demonstrated OOP principles">
-                    <div class="badge-icon">
-                      <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
-                      </svg>
+                  
+                  <div class="stat-card">
+                    <div class="stat-header">
+                      <h4>Error Resolution Rate</h4>
+                      <span class="stat-info" title="How quickly you resolve coding errors">
+                        <i class="codicon codicon-info"></i>
+                      </span>
                     </div>
-                    <span class="badge-name">OOP Wizard</span>
+                    <div class="resolution-stats">
+                      <div class="resolution-chart">
+                        <div class="chart-donut">
+                          <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="75, 100" d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <text x="18" y="20.35" class="percentage">75%</text>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="resolution-details">
+                        <div class="resolution-stat">
+                          <span class="stat-label">Avg. Time:</span>
+                          <span class="stat-value">14 min</span>
+                        </div>
+                        <div class="resolution-stat">
+                          <span class="stat-label">Errors Fixed:</span>
+                          <span class="stat-value">23</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="badge" data-tooltip="Complete 3 test-driven exercises to unlock">
-                    <div class="badge-icon">
-                      <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
-                      </svg>
+                  
+                  <div class="stat-card">
+                    <div class="stat-header">
+                      <h4>Most Active Times</h4>
+                      <span class="stat-info" title="When you are most active coding">
+                        <i class="codicon codicon-info"></i>
+                      </span>
                     </div>
-                    <span class="badge-name">Test Champion</span>
-                  </div>
-                  <div class="badge" data-tooltip="Complete 5 algorithm challenges to unlock">
-                    <div class="badge-icon">
-                      <svg class="circle-icon" viewBox="0 0 24 24" width="16" height="16">
-                        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle>
-                      </svg>
+                    <div class="active-times">
+                      <div class="time-bar-chart">
+                        <div class="time-bar" style="height: 30%;" data-time="9AM"></div>
+                        <div class="time-bar" style="height: 40%;" data-time="12PM"></div>
+                        <div class="time-bar" style="height: 60%;" data-time="3PM"></div>
+                        <div class="time-bar" style="height: 100%;" data-time="6PM"></div>
+                        <div class="time-bar" style="height: 80%;" data-time="9PM"></div>
+                        <div class="time-bar" style="height: 35%;" data-time="12AM"></div>
+                      </div>
+                      <div class="time-labels">
+                        <span>9AM</span>
+                        <span>12PM</span>
+                        <span>3PM</span>
+                        <span>6PM</span>
+                        <span>9PM</span>
+                        <span>12AM</span>
+                      </div>
                     </div>
-                    <span class="badge-name">Algo Expert</span>
                   </div>
                 </div>
-              </div>
               
               <div class="weekly-goals-section">
                 <div class="progress-header">
