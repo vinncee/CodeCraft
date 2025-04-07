@@ -505,34 +505,88 @@ numbers.sort((a, b) => a - b);</code></pre>
 
       <!-- Achievements tab content -->
       <div class="tab-content" id="achievements-tab">
-        <div class="achievements-container">
-          <div class="achievements-header">
-            <h2>Your Achievements</h2>
-            <div class="achievements-stats">
-              <div class="achievement-stat">
-                <span id="achievements-earned">0</span>
-                <span>Earned</span>
-              </div>
-              <div class="achievement-stat">
-                <span id="achievements-total">0</span>
-                <span>Total</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="achievements-categories">
-            <button class="category-button active" data-category="all">All</button>
-            <button class="category-button" data-category="coding">Coding Skills</button>
-            <button class="category-button" data-category="learning">Learning</button>
-            <button class="category-button" data-category="problem-solving">Problem Solving</button>
-            <button class="category-button" data-category="milestones">Milestones</button>
-          </div>
-
-          <div class="achievements-grid" id="achievements-grid">
-            <!-- Achievements will be populated dynamically -->
-          </div>
+  <div class="achievements-container" style="display: block; width: 100%; height: 100%; padding: 1.5rem;">
+    <div class="achievements-header">
+      <h2>Your Achievements</h2>
+      <div class="achievements-stats">
+        <div class="achievement-stat">
+          <span id="achievements-earned">0</span>
+          <span>Earned</span>
+        </div>
+        <div class="achievement-stat">
+          <span id="achievements-total">15</span>
+          <span>Total</span>
         </div>
       </div>
+    </div>
+
+    <div class="achievements-categories">
+      <button class="category-button active" data-category="all">All</button>
+      <button class="category-button" data-category="coding">Coding Skills</button>
+      <button class="category-button" data-category="learning">Learning</button>
+      <button class="category-button" data-category="problem-solving">Problem Solving</button>
+      <button class="category-button" data-category="milestones">Milestones</button>
+    </div>
+
+    <!-- Static achievement cards that will always show -->
+    <div class="achievements-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
+        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
+        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
+          <i class="codicon codicon-comment"></i>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Conversation Starter</div>
+          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Started your first conversation with the AI mentor</div>
+        </div>
+      </div>
+      
+      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
+        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
+        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
+          <i class="codicon codicon-debug"></i>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Bug Squasher</div>
+          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Successfully resolved your first coding error</div>
+        </div>
+      </div>
+      
+      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
+        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
+        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
+          <i class="codicon codicon-calendar"></i>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Persistent Learner</div>
+          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Used the AI mentor for 5 consecutive days</div>
+        </div>
+      </div>
+      
+      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
+        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
+        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
+          <i class="codicon codicon-question"></i>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Question Master</div>
+          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Asked 10 meaningful questions</div>
+        </div>
+      </div>
+      
+      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
+        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
+        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
+          <i class="codicon codicon-refresh"></i>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Loop Expert</div>
+          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Demonstrated understanding of complex loop concepts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
     </main>
   </div>
 
@@ -978,6 +1032,16 @@ numbers.sort((a, b) => a - b);</code></pre>
           tabContents.forEach(content => content.classList.remove('active'));
           document.getElementById(`${tab}-tab`).classList.add('active');
           
+          if (tab === 'achievements') {
+            // Force display of achievements when switching to the tab
+            displayAchievements(state.achievements || [], 'all');
+            
+            // If no achievements exist yet, initialize with defaults
+            if (!state.achievements || state.achievements.length === 0) {
+              initializeDefaultAchievements();
+            }
+          }
+          
           // Update state
           state.activeTab = tab;
           vscode.setState(state);
@@ -1311,6 +1375,61 @@ categoryButtons.forEach(button => {
       });
     })();
   </script>
+  <!-- Add this script at the end of the body, just before the closing </body> tag -->
+<script nonce="{{nonce}}">
+  // Add a direct initialization script to ensure the achievements tab works
+  (function() {
+    console.log('Direct initialization script running');
+    
+    // Force the achievements tab to be properly initialized
+    const achievementsTab = document.getElementById('achievements-tab');
+    if (achievementsTab) {
+      // Make sure it has the right styles
+      achievementsTab.style.display = 'none'; // Initially hidden
+      achievementsTab.style.width = '100%';
+      achievementsTab.style.height = '100%';
+      achievementsTab.style.overflow = 'auto';
+      
+      // Check if it should be active
+      if (document.querySelector('.tab-button[data-tab="achievements"]').classList.contains('active')) {
+        achievementsTab.style.display = 'block';
+        console.log('Achievements tab activated on initial load');
+      }
+    } else {
+      console.error('Achievements tab element not found during direct initialization');
+    }
+    
+    // Add direct click handler to achievements tab button
+    const achievementsButton = document.querySelector('.tab-button[data-tab="achievements"]');
+    if (achievementsButton) {
+      achievementsButton.addEventListener('click', function() {
+        console.log('Achievements button clicked (direct handler)');
+        
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.style.display = 'none';
+          tab.classList.remove('active');
+        });
+        
+        // Show achievements tab
+        const achievementsTab = document.getElementById('achievements-tab');
+        if (achievementsTab) {
+          achievementsTab.style.display = 'block';
+          achievementsTab.classList.add('active');
+          console.log('Achievements tab displayed (direct handler)');
+        } else {
+          console.error('Achievements tab not found (direct handler)');
+        }
+        
+        // Update button states
+        document.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+    }
+  })();
+</script>
 </body>
 </html>
 

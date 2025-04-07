@@ -2196,3 +2196,191 @@ kbd {
   margin-left: 6px;
 }
 
+/* Add these styles to ensure the achievements container is visible */
+.achievements-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make sure the achievements grid is visible */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+/* Ensure achievement cards have proper styling */
+.achievement-card {
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+}
+
+/* Make sure the tab content is properly displayed */
+.tab-content.active {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Fix for achievements tab visibility */
+#achievements-tab {
+  display: none;
+}
+
+#achievements-tab.active {
+  display: block !important;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.achievements-container {
+  padding: 1.5rem;
+  width: 100%;
+  height: 100%;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.achievement-card {
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 180px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.achievement-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.achievement-card.locked {
+  opacity: 0.7;
+}
+
+.achievement-card.locked::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 1;
+}
+
+.achievement-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-color), var(--exp-gradient-end));
+  color: white;
+  font-size: 1.5rem;
+}
+
+.achievement-card.locked .achievement-icon {
+  background: linear-gradient(135deg, var(--secondary-color), #555);
+}
+
+.achievement-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.achievement-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.achievement-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.achievement-lock {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  z-index: 2;
+}
+
+/* Add these styles at the end of the file */
+
+/* Fix for achievements tab visibility */
+#achievements-tab {
+  display: none;
+}
+
+#achievements-tab.active {
+  display: block !important;
+}
+
+/* Force achievements container to be visible */
+.achievements-container {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 1.5rem !important;
+}
+
+/* Force achievements grid to be visible */
+.achievements-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 1.5rem !important;
+  margin-top: 1.5rem !important;
+}
+
+/* Force achievement cards to be visible */
+.achievement-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  background-color: var(--light-bg) !important;
+  border-radius: var(--border-radius-md) !important;
+  padding: 1.5rem !important;
+  min-height: 180px !important;
+  position: relative !important;
+}
+
+/* Fix tab switching */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block !important;
+}
+

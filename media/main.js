@@ -44,6 +44,9 @@ const vscode = {
   getState: () => {
     return state
   },
+  postMessage: (message) => {
+    console.log("vscode.postMessage called with:", message)
+  },
 }
 
 // Toggle Code Snippets Panel
@@ -414,6 +417,306 @@ window.addEventListener("message", (event) => {
       updateLearningStats(message.stats)
       break
     // Other existing cases...
+  }
+})
+
+// Add this function to initialize some default achievements if none exist
+function initializeDefaultAchievements() {
+  if (!state.achievements || state.achievements.length === 0) {
+    state.achievements = [
+      {
+        id: "first-chat",
+        title: "Conversation Starter",
+        description: "Started your first conversation with the AI mentor",
+        category: "milestones",
+        icon: "comment",
+        unlockedAt: null,
+        isNew: false,
+      },
+      {
+        id: "error-solver",
+        title: "Bug Squasher",
+        description: "Successfully resolved your first coding error",
+        category: "problem-solving",
+        icon: "debug",
+        unlockedAt: null,
+        isNew: false,
+      },
+      {
+        id: "persistent-learner",
+        title: "Persistent Learner",
+        description: "Used the AI mentor for 5 consecutive days",
+        category: "learning",
+        icon: "calendar",
+        unlockedAt: null,
+        isNew: false,
+      },
+      {
+        id: "question-master",
+        title: "Question Master",
+        description: "Asked 10 meaningful questions",
+        category: "learning",
+        icon: "question",
+        unlockedAt: null,
+        isNew: false,
+      },
+      {
+        id: "loop-expert",
+        title: "Loop Expert",
+        description: "Demonstrated understanding of complex loop concepts",
+        category: "coding",
+        icon: "refresh",
+        unlockedAt: null,
+        isNew: false,
+      },
+    ]
+    vscode.setState(state)
+  }
+
+  // Make sure to display achievements when tab is loaded
+  displayAchievements(state.achievements, "all")
+}
+
+// Modify the tab switching event listener to ensure achievements are displayed
+// Find the existing tab switching event listener and add this inside the callback function:
+// After this line: document.getElementById(`${tab}-tab`).classList.add('active');
+document.querySelectorAll(".tab-button").forEach((tabButton) => {
+  tabButton.addEventListener("click", (e) => {
+    const tab = e.target.dataset.tab
+
+    // Hide all tab contents
+    document.querySelectorAll(".tab-content").forEach((tabContent) => {
+      tabContent.classList.add("hidden")
+    })
+
+    // Deactivate all tab buttons
+    document.querySelectorAll(".tab-button").forEach((btn) => {
+      btn.classList.remove("active")
+    })
+
+    // Show the selected tab content
+    document.getElementById(`${tab}-content`).classList.remove("hidden")
+
+    // Activate the selected tab button
+    document.getElementById(`${tab}-tab`).classList.add("active")
+    if (tab === "achievements") {
+      // Make sure achievements are displayed when switching to the tab
+      displayAchievements(state.achievements || [], "all")
+    }
+  })
+})
+
+// Make sure the achievements tab works correctly
+document.querySelector('[data-tab="achievements"]').addEventListener("click", function () {
+  // Hide all tab contents
+  document.querySelectorAll(".tab-content").forEach((content) => {
+    content.classList.remove("active")
+  })
+
+  // Deactivate all tab buttons
+  document.querySelectorAll(".tab-button").forEach((btn) => {
+    btn.classList.remove("active")
+  })
+
+  // Show achievements tab content and activate button
+  document.getElementById("achievements-tab").classList.add("active")
+  this.classList.add("active")
+
+  console.log("Achievements tab clicked, tab content should be visible now")
+})
+
+// Add this call at the end of the IIFE, just before the closing })();
+initializeDefaultAchievements()
+
+// Define displayAchievements function
+function displayAchievements(achievements, filter) {
+  const achievementsList = document.getElementById("achievements-list")
+  achievementsList.innerHTML = "" // Clear existing list
+
+  const filteredAchievements = achievements.filter((achievement) => {
+    if (filter === "all") return true
+    return achievement.category === filter
+  })
+
+  if (filteredAchievements.length === 0) {
+    achievementsList.innerHTML = "<p>No achievements to display.</p>"
+    return
+  }
+
+  filteredAchievements.forEach((achievement) => {
+    const achievementItem = document.createElement("div")
+    achievementItem.classList.add("achievement-item")
+
+    const icon = document.createElement("span")
+    icon.classList.add("achievement-icon")
+    icon.textContent = achievement.icon // Use text content for simplicity
+
+    const content = document.createElement("div")
+    content.classList.add("achievement-content")
+
+    const title = document.createElement("h3")
+    title.textContent = achievement.title
+
+    const description = document.createElement("p")
+    description.textContent = achievement.description
+
+    content.appendChild(title)
+    content.appendChild(description)
+
+    achievementItem.appendChild(icon)
+    achievementItem.appendChild(content)
+
+    achievementsList.appendChild(achievementItem)
+  })
+}
+
+// Add this code at the end of the file, just before the closing })();
+
+// Fix tab switching for achievements
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM fully loaded - initializing tab handlers")
+
+  // Get all tab buttons
+  const tabButtons = document.querySelectorAll(".tab-button")
+
+  // Add click event to each tab button
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const tabId = this.getAttribute("data-tab")
+      console.log(`Tab clicked: ${tabId}`)
+
+      // Remove active class from all tabs and buttons
+      document.querySelectorAll(".tab-content").forEach((tab) => {
+        tab.classList.remove("active")
+      })
+
+      tabButtons.forEach((btn) => {
+        btn.classList.remove("active")
+      })
+
+      // Add active class to selected tab and button
+      const selectedTab = document.getElementById(`${tabId}-tab`)
+      if (selectedTab) {
+        selectedTab.classList.add("active")
+        console.log(`Activated tab: ${tabId}-tab`)
+      } else {
+        console.error(`Tab element not found: ${tabId}-tab`)
+      }
+
+      this.classList.add("active")
+
+      // Special handling for achievements tab
+      if (tabId === "achievements") {
+        console.log("Achievements tab clicked - sending message to extension")
+
+        // Notify the extension about tab switch
+        vscode.postMessage({
+          command: "switchTab",
+          tab: "achievements",
+        })
+
+        // Force display the achievements tab
+        const achievementsTab = document.getElementById("achievements-tab")
+        if (achievementsTab) {
+          achievementsTab.style.display = "block"
+          console.log("Forced achievements tab to display: block")
+
+          // Also force the container to be visible
+          const achievementsContainer = achievementsTab.querySelector(".achievements-container")
+          if (achievementsContainer) {
+            achievementsContainer.style.display = "block"
+            console.log("Forced achievements container to display: block")
+          } else {
+            console.error("Achievements container not found")
+          }
+        } else {
+          console.error("Achievements tab element not found")
+        }
+      }
+    })
+  })
+
+  // Check if achievements tab is the default active tab
+  const activeTab = document.querySelector(".tab-button.active")
+  if (activeTab && activeTab.getAttribute("data-tab") === "achievements") {
+    console.log("Achievements tab is active by default - forcing display")
+    const achievementsTab = document.getElementById("achievements-tab")
+    if (achievementsTab) {
+      achievementsTab.style.display = "block"
+    }
+  }
+})
+
+// Add a function to debug the DOM structure
+function debugDOMStructure() {
+  console.log("--- DOM Structure Debug ---")
+
+  // Check tabs
+  const tabs = document.querySelectorAll(".tab-button")
+  console.log(`Found ${tabs.length} tab buttons:`)
+  tabs.forEach((tab) => {
+    console.log(`- Tab: ${tab.getAttribute("data-tab")}, Active: ${tab.classList.contains("active")}`)
+  })
+
+  // Check tab contents
+  const tabContents = document.querySelectorAll(".tab-content")
+  console.log(`Found ${tabContents.length} tab contents:`)
+  tabContents.forEach((content) => {
+    console.log(
+      `- Content ID: ${content.id}, Active: ${content.classList.contains("active")}, Display: ${window.getComputedStyle(content).display}`,
+    )
+  })
+
+  // Check achievements specifically
+  const achievementsTab = document.getElementById("achievements-tab")
+  if (achievementsTab) {
+    console.log("Achievements tab found:")
+    console.log(`- Classes: ${achievementsTab.className}`)
+    console.log(`- Display: ${window.getComputedStyle(achievementsTab).display}`)
+    console.log(`- Visibility: ${window.getComputedStyle(achievementsTab).visibility}`)
+    console.log(`- Height: ${window.getComputedStyle(achievementsTab).height}`)
+
+    const container = achievementsTab.querySelector(".achievements-container")
+    if (container) {
+      console.log("Achievements container found:")
+      console.log(`- Display: ${window.getComputedStyle(container).display}`)
+
+      const grid = container.querySelector(".achievements-grid")
+      if (grid) {
+        console.log("Achievements grid found:")
+        console.log(`- Display: ${window.getComputedStyle(grid).display}`)
+        console.log(`- Child count: ${grid.children.length}`)
+      } else {
+        console.error("Achievements grid not found")
+      }
+    } else {
+      console.error("Achievements container not found")
+    }
+  } else {
+    console.error("Achievements tab not found")
+  }
+
+  console.log("--- End DOM Structure Debug ---")
+}
+
+// Run the debug function after a short delay to ensure the DOM is fully processed
+setTimeout(debugDOMStructure, 1000)
+
+// Add a global error handler to catch any JavaScript errors
+window.addEventListener("error", (event) => {
+  console.error("JavaScript error:", event.error)
+
+  // Try to notify the extension
+  try {
+    vscode.postMessage({
+      command: "logError",
+      error: {
+        message: event.error.message,
+        stack: event.error.stack,
+      },
+    })
+  } catch (e) {
+    console.error("Failed to send error to extension:", e)
   }
 })
 

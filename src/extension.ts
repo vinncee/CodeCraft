@@ -211,6 +211,9 @@ class AIMentorPanel {
           case "updateLearningStats":
             this._updateLearningStats(message.stats)
             return
+          case "switchTab":
+            this._handleTabSwitch(message.tab)
+            return
         }
       },
       null,
@@ -370,98 +373,18 @@ class AIMentorPanel {
           unlockedAt: null,
           isNew: false,
         },
-        {
-          id: "algorithm-apprentice",
-          title: "Algorithm Apprentice",
-          description: "Solved a complex algorithmic problem",
-          category: "problem-solving",
-          icon: "symbol-misc",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "debugging-detective",
-          title: "Debugging Detective",
-          description: "Resolved 5 different types of errors",
-          category: "problem-solving",
-          icon: "search",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "code-reviewer",
-          title: "Code Reviewer",
-          description: "Improved code quality based on AI suggestions",
-          category: "coding",
-          icon: "checklist",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "level-5",
-          title: "Rising Star",
-          description: "Reached level 5 in your learning journey",
-          category: "milestones",
-          icon: "star",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "level-10",
-          title: "Coding Prodigy",
-          description: "Reached level 10 in your learning journey",
-          category: "milestones",
-          icon: "star-full",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "weekly-goals",
-          title: "Goal Crusher",
-          description: "Completed all weekly goals",
-          category: "milestones",
-          icon: "check-all",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "night-owl",
-          title: "Night Owl",
-          description: "Coded with AI assistance after midnight",
-          category: "milestones",
-          icon: "watch",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "functional-wizard",
-          title: "Functional Wizard",
-          description: "Mastered functional programming concepts",
-          category: "coding",
-          icon: "symbol-function",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "oop-architect",
-          title: "OOP Architect",
-          description: "Demonstrated proficiency in object-oriented programming",
-          category: "coding",
-          icon: "symbol-class",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "api-explorer",
-          title: "API Explorer",
-          description: "Successfully worked with external APIs",
-          category: "coding",
-          icon: "globe",
-          unlockedAt: null,
-          isNew: false,
-        },
+        // Ensure we have at least these 5 achievements
       ]
       this._saveAchievements()
+    }
+
+    // Immediately send achievements to webview to ensure they're available
+    if (this._panel && this._panel.webview) {
+      this._panel.webview.postMessage({
+        command: "updateAchievements",
+        achievements: this._achievements,
+        forceDisplay: true,
+      })
     }
   }
 
@@ -803,7 +726,7 @@ class AIMentorPanel {
     // Save to global state
     await this._context.globalState.update("codecraft.userExp", this._userExp)
     await this._context.globalState.update("codecraft.userLevel", this._userLevel)
-    await this._context.globalState.update("codecraft.expToNextLevel", this._expToNextLevel)
+    await this._context.globalState.update("expToNextLevel", this._expToNextLevel)
 
     // Update learning progress goal when gaining experience
     this._updateGoalProgress("learning", 1)
@@ -839,11 +762,19 @@ class AIMentorPanel {
     this._panel.webview.postMessage({
       command: "updateAchievements",
       achievements: this._achievements,
+      forceDisplay: true, // Add this flag to force display
     })
 
     // Add this to the _update() method to send initial stats data
     // Find the part where it sends initial data and add this line
     this._loadLearningStats()
+
+    // Force a notification to check if messaging is working
+    this._panel.webview.postMessage({
+      command: "showNotification",
+      text: "Extension initialized successfully",
+      type: "info",
+    })
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -895,6 +826,25 @@ class AIMentorPanel {
       command: "updateLearningStats",
       stats: stats,
     })
+  }
+
+  // Add a new method to handle tab switching
+  private _handleTabSwitch(tab: string) {
+    if (tab === "achievements") {
+      // Force send achievements data when switching to achievements tab
+      this._panel.webview.postMessage({
+        command: "updateAchievements",
+        achievements: this._achievements,
+        forceDisplay: true,
+      })
+
+      // Also send a notification to confirm tab switch
+      this._panel.webview.postMessage({
+        command: "showNotification",
+        text: "Switched to Achievements tab",
+        type: "info",
+      })
+    }
   }
 }
 
