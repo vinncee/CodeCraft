@@ -17,15 +17,31 @@ interface Activity {
   description: string
 }
 
-// Define achievement interface
-interface Achievement {
-  id: string
-  title: string
-  description: string
-  category: string
-  icon: string
-  unlockedAt: string | null
-  isNew: boolean
+// Define learning stats interface
+interface LearningStats {
+  skills: {
+    javascript: number
+    problemSolving: number
+    debugging: number
+    codeOrganization: number
+  }
+  streak: {
+    currentStreak: number
+    lastActive: string
+    activeDays: string[]
+  }
+  errorResolution: {
+    rate: number
+    avgTime: number
+    totalFixed: number
+  }
+  activeTimes: {
+    [key: string]: number
+  }
+  progressHistory: {
+    date: string
+    value: number
+  }[]
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -92,7 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
       event.document.languageId.match(/javascript|typescript|python|java|csharp|cpp|go|rust|php/)
     ) {
       const code = event.document.getText()
-      AIMentorPanel.currentPanel.analyzeCodeForAchievements(code)
+      AIMentorPanel.currentPanel.analyzeCode()
     }
   })
 }
@@ -114,7 +130,40 @@ class AIMentorPanel {
   private _context: vscode.ExtensionContext
   private _weeklyGoals: WeeklyGoal[] = []
   private _activities: Activity[] = []
-  private _achievements: Achievement[] = []
+  private _learningStats: LearningStats = {
+    skills: {
+      javascript: 65,
+      problemSolving: 78,
+      debugging: 42,
+      codeOrganization: 55,
+    },
+    streak: {
+      currentStreak: 5,
+      lastActive: new Date().toISOString(),
+      activeDays: ["2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04", "2025-04-05"],
+    },
+    errorResolution: {
+      rate: 75,
+      avgTime: 14, // minutes
+      totalFixed: 23,
+    },
+    activeTimes: {
+      "9AM": 30,
+      "12PM": 40,
+      "3PM": 60,
+      "6PM": 100,
+      "9PM": 80,
+      "12AM": 35,
+    },
+    progressHistory: [
+      { date: "2025-03-01", value: 10 },
+      { date: "2025-03-08", value: 25 },
+      { date: "2025-03-15", value: 40 },
+      { date: "2025-03-22", value: 55 },
+      { date: "2025-03-29", value: 65 },
+      { date: "2025-04-05", value: 80 },
+    ],
+  }
 
   public static createOrShow(extensionUri: vscode.Uri, aiService: AIService, context: vscode.ExtensionContext) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
@@ -163,9 +212,8 @@ class AIMentorPanel {
     // Load activities
     this._loadActivities()
 
-    this._loadAchievements()
+    // Load learning stats
     this._loadLearningStats()
-    this._checkForAchievements("login")
 
     // Set the webview's initial html content
     this._update()
@@ -211,9 +259,6 @@ class AIMentorPanel {
           case "updateLearningStats":
             this._updateLearningStats(message.stats)
             return
-          case "switchTab":
-            this._handleTabSwitch(message.tab)
-            return
         }
       },
       null,
@@ -221,22 +266,15 @@ class AIMentorPanel {
     )
   }
 
-  // Add new methods to handle the stats data
-
-  // Add this after the _loadAchievements() method
   private _loadLearningStats() {
     // Get stored stats or initialize default values
-    const storedStats = this._context.globalState.get<any>("codecraft.learningStats")
+    const storedStats = this._context.globalState.get<LearningStats>("codecraft.learningStats")
 
     if (storedStats) {
-      // Send stored stats to webview
-      this._panel.webview.postMessage({
-        command: "updateLearningStats",
-        stats: storedStats,
-      })
+      this._learningStats = storedStats
     } else {
       // Create default stats
-      const defaultStats = {
+      this._learningStats = {
         skills: {
           javascript: 65,
           problemSolving: 78,
@@ -261,17 +299,25 @@ class AIMentorPanel {
           "9PM": 80,
           "12AM": 35,
         },
+        progressHistory: [
+          { date: "2025-03-01", value: 10 },
+          { date: "2025-03-08", value: 25 },
+          { date: "2025-03-15", value: 40 },
+          { date: "2025-03-22", value: 55 },
+          { date: "2025-03-29", value: 65 },
+          { date: "2025-04-05", value: 80 },
+        ],
       }
 
       // Save default stats
-      this._context.globalState.update("codecraft.learningStats", defaultStats)
-
-      // Send default stats to webview
-      this._panel.webview.postMessage({
-        command: "updateLearningStats",
-        stats: defaultStats,
-      })
+      this._context.globalState.update("codecraft.learningStats", this._learningStats)
     }
+
+    // Send stats to webview
+    this._panel.webview.postMessage({
+      command: "updateLearningStats",
+      stats: this._learningStats,
+    })
   }
 
   private _loadActivities() {
@@ -311,226 +357,30 @@ class AIMentorPanel {
     // Update skill progress based on activity type
     if (title === "Error Explained") {
       // Update error resolution stats
-      const learningStats = this._context.globalState.get<any>("codecraft.learningStats") || {}
-      if (learningStats.errorResolution) {
-        learningStats.errorResolution.totalFixed += 1
-        this._context.globalState.update("codecraft.learningStats", learningStats)
-      }
-    }
-  }
+      this._learningStats.errorResolution.totalFixed += 1
+      this._context.globalState.update("codecraft.learningStats", this._learningStats)
 
-  private _loadAchievements() {
-    // Get stored achievements or initialize default ones
-    const storedAchievements = this._context.globalState.get<Achievement[]>("codecraft.achievements")
-
-    if (storedAchievements && storedAchievements.length > 0) {
-      this._achievements = storedAchievements
-    } else {
-      // Create default achievements (all locked initially)
-      this._achievements = [
-        {
-          id: "first-chat",
-          title: "Conversation Starter",
-          description: "Started your first conversation with the AI mentor",
-          category: "milestones",
-          icon: "comment",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "error-solver",
-          title: "Bug Squasher",
-          description: "Successfully resolved your first coding error",
-          category: "problem-solving",
-          icon: "debug",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "persistent-learner",
-          title: "Persistent Learner",
-          description: "Used the AI mentor for 5 consecutive days",
-          category: "learning",
-          icon: "calendar",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "question-master",
-          title: "Question Master",
-          description: "Asked 10 meaningful questions",
-          category: "learning",
-          icon: "question",
-          unlockedAt: null,
-          isNew: false,
-        },
-        {
-          id: "loop-expert",
-          title: "Loop Expert",
-          description: "Demonstrated understanding of complex loop concepts",
-          category: "coding",
-          icon: "refresh",
-          unlockedAt: null,
-          isNew: false,
-        },
-        // Ensure we have at least these 5 achievements
-      ]
-      this._saveAchievements()
-    }
-
-    // Immediately send achievements to webview to ensure they're available
-    if (this._panel && this._panel.webview) {
+      // Send updated stats to webview
       this._panel.webview.postMessage({
-        command: "updateAchievements",
-        achievements: this._achievements,
-        forceDisplay: true,
+        command: "updateLearningStats",
+        stats: this._learningStats,
       })
     }
   }
 
-  private _saveAchievements() {
-    this._context.globalState.update("codecraft.achievements", this._achievements)
-  }
+  public analyzeCode() {
+    // Analyze code for learning patterns
+    // This is a simplified version that just updates the code organization skill
+    this._learningStats.skills.codeOrganization = Math.min(this._learningStats.skills.codeOrganization + 1, 100)
 
-  private _unlockAchievement(achievementId: string) {
-    const achievement = this._achievements.find((a) => a.id === achievementId)
-    if (achievement && !achievement.unlockedAt) {
-      achievement.unlockedAt = new Date().toISOString()
-      achievement.isNew = true
-      this._saveAchievements()
+    // Update learning stats
+    this._context.globalState.update("codecraft.learningStats", this._learningStats)
 
-      // Send updated achievements to webview
-      this._panel.webview.postMessage({
-        command: "updateAchievements",
-        achievements: this._achievements,
-        newUnlock: achievementId,
-      })
-
-      // Record activity
-      this._recordActivity("Achievement Unlocked", `Unlocked achievement: ${achievement.title}`)
-    }
-  }
-
-  public analyzeCodeForAchievements(code: string) {
-    this._checkForAchievements("code-content", code)
-  }
-
-  private _checkForAchievements(trigger: string, data?: any) {
-    switch (trigger) {
-      case "chat":
-        // Check for first chat achievement
-        this._unlockAchievement("first-chat")
-
-        // Count meaningful questions (longer than 15 chars)
-        if (data && typeof data === "string" && data.length > 15) {
-          const questionCount = this._context.globalState.get<number>("codecraft.questionCount", 0) + 1
-          this._context.globalState.update("codecraft.questionCount", questionCount)
-
-          if (questionCount >= 10) {
-            this._unlockAchievement("question-master")
-          }
-        }
-        break
-
-      case "error":
-        // Unlock error solver achievement
-        this._unlockAchievement("error-solver")
-
-        // Track different error types
-        const errorTypes = this._context.globalState.get<string[]>("codecraft.errorTypes", [])
-        if (data && data.message && !errorTypes.includes(data.message.substring(0, 20))) {
-          errorTypes.push(data.message.substring(0, 20))
-          this._context.globalState.update("codecraft.errorTypes", errorTypes)
-
-          if (errorTypes.length >= 5) {
-            this._unlockAchievement("debugging-detective")
-          }
-        }
-        break
-
-      case "level":
-        // Check level-based achievements
-        if (data >= 5) {
-          this._unlockAchievement("level-5")
-        }
-        if (data >= 10) {
-          this._unlockAchievement("level-10")
-        }
-        break
-
-      case "goals":
-        // Check if all weekly goals are completed
-        if (this._weeklyGoals.every((goal) => goal.current >= goal.target)) {
-          this._unlockAchievement("weekly-goals")
-        }
-        break
-
-      case "time":
-        // Check time-based achievements
-        const now = new Date()
-        if (now.getHours() >= 0 && now.getHours() < 5) {
-          this._unlockAchievement("night-owl")
-        }
-        break
-
-      case "login":
-        // Check for consecutive days
-        const lastLogin = this._context.globalState.get<string>("codecraft.lastLogin", "")
-        const today = new Date().toISOString().split("T")[0]
-
-        if (lastLogin) {
-          const lastDate = new Date(lastLogin)
-          const yesterday = new Date()
-          yesterday.setDate(yesterday.getDate() - 1)
-
-          if (lastDate.toISOString().split("T")[0] === yesterday.toISOString().split("T")[0]) {
-            const streak = this._context.globalState.get<number>("codecraft.loginStreak", 0) + 1
-            this._context.globalState.update("codecraft.loginStreak", streak)
-
-            if (streak >= 5) {
-              this._unlockAchievement("persistent-learner")
-            }
-          } else if (lastDate.toISOString().split("T")[0] !== today) {
-            // Reset streak if not consecutive and not same day
-            this._context.globalState.update("codecraft.loginStreak", 1)
-          }
-        } else {
-          this._context.globalState.update("codecraft.loginStreak", 1)
-        }
-
-        this._context.globalState.update("codecraft.lastLogin", today)
-        break
-
-      case "code-content":
-        // Analyze code content for specific achievements
-        if (data && typeof data === "string") {
-          // Check for functional programming patterns
-          if (data.includes("map(") && data.includes("filter(") && data.includes("reduce(")) {
-            this._unlockAchievement("functional-wizard")
-          }
-
-          // Check for OOP patterns
-          if (
-            (data.includes("class ") || data.includes("interface ")) &&
-            (data.includes("extends ") || data.includes("implements ")) &&
-            data.includes("new ")
-          ) {
-            this._unlockAchievement("oop-architect")
-          }
-
-          // Check for API usage
-          if (
-            (data.includes("fetch(") ||
-              data.includes("axios.") ||
-              data.includes("http.") ||
-              data.includes("request(")) &&
-            (data.includes("api") || data.includes("API") || data.includes("endpoint"))
-          ) {
-            this._unlockAchievement("api-explorer")
-          }
-        }
-        break
-    }
+    // Send updated stats to webview
+    this._panel.webview.postMessage({
+      command: "updateLearningStats",
+      stats: this._learningStats,
+    })
   }
 
   private _loadWeeklyGoals() {
@@ -590,9 +440,6 @@ class AIMentorPanel {
         command: "updateWeeklyGoals",
         goals: this._weeklyGoals,
       })
-
-      // Check for achievements
-      this._checkForAchievements("goals")
     }
   }
 
@@ -652,7 +499,16 @@ class AIMentorPanel {
 
         // Update learning progress goal
         this._updateGoalProgress("learning", 5)
-        this._checkForAchievements("error", errorInfo)
+
+        // Update debugging skill
+        this._learningStats.skills.debugging = Math.min(this._learningStats.skills.debugging + 2, 100)
+        this._context.globalState.update("codecraft.learningStats", this._learningStats)
+
+        // Send updated stats to webview
+        this._panel.webview.postMessage({
+          command: "updateLearningStats",
+          stats: this._learningStats,
+        })
       }
     }
   }
@@ -686,9 +542,15 @@ class AIMentorPanel {
     // Update learning progress goal
     this._updateGoalProgress("learning", 2)
 
-    // Check for achievements
-    this._checkForAchievements("chat", text)
-    this._checkForAchievements("time")
+    // Update JavaScript skill
+    this._learningStats.skills.javascript = Math.min(this._learningStats.skills.javascript + 1, 100)
+    this._context.globalState.update("codecraft.learningStats", this._learningStats)
+
+    // Send updated stats to webview
+    this._panel.webview.postMessage({
+      command: "updateLearningStats",
+      stats: this._learningStats,
+    })
   }
 
   private _toggleMode(mode: string) {
@@ -730,7 +592,16 @@ class AIMentorPanel {
 
     // Update learning progress goal when gaining experience
     this._updateGoalProgress("learning", 1)
-    this._checkForAchievements("level", level)
+
+    // Update problem solving skill
+    this._learningStats.skills.problemSolving = Math.min(this._learningStats.skills.problemSolving + 1, 100)
+    this._context.globalState.update("codecraft.learningStats", this._learningStats)
+
+    // Send updated stats to webview
+    this._panel.webview.postMessage({
+      command: "updateLearningStats",
+      stats: this._learningStats,
+    })
   }
 
   private _update() {
@@ -758,22 +629,10 @@ class AIMentorPanel {
       activities: this._activities,
     })
 
-    // Send initial achievements data
+    // Send initial learning stats data
     this._panel.webview.postMessage({
-      command: "updateAchievements",
-      achievements: this._achievements,
-      forceDisplay: true, // Add this flag to force display
-    })
-
-    // Add this to the _update() method to send initial stats data
-    // Find the part where it sends initial data and add this line
-    this._loadLearningStats()
-
-    // Force a notification to check if messaging is working
-    this._panel.webview.postMessage({
-      command: "showNotification",
-      text: "Extension initialized successfully",
-      type: "info",
+      command: "updateLearningStats",
+      stats: this._learningStats,
     })
   }
 
@@ -816,9 +675,10 @@ class AIMentorPanel {
     }
   }
 
-  // Add this method to update learning stats
-  private _updateLearningStats(stats: any) {
+  // Update learning stats
+  private _updateLearningStats(stats: LearningStats) {
     // Store updated stats
+    this._learningStats = stats
     this._context.globalState.update("codecraft.learningStats", stats)
 
     // Send updated stats to webview
@@ -826,25 +686,6 @@ class AIMentorPanel {
       command: "updateLearningStats",
       stats: stats,
     })
-  }
-
-  // Add a new method to handle tab switching
-  private _handleTabSwitch(tab: string) {
-    if (tab === "achievements") {
-      // Force send achievements data when switching to achievements tab
-      this._panel.webview.postMessage({
-        command: "updateAchievements",
-        achievements: this._achievements,
-        forceDisplay: true,
-      })
-
-      // Also send a notification to confirm tab switch
-      this._panel.webview.postMessage({
-        command: "showNotification",
-        text: "Switched to Achievements tab",
-        type: "info",
-      })
-    }
   }
 }
 
@@ -858,4 +699,3 @@ function getNonce() {
 }
 
 export function deactivate() {}
-

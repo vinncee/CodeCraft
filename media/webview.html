@@ -19,9 +19,6 @@
         <button class="tab-button" data-tab="journal">
           <i class="codicon codicon-book"></i> Learning Journal
         </button>
-        <button class="tab-button" data-tab="achievements">
-          <i class="codicon codicon-trophy"></i> Achievements
-        </button>
       </div>
 
       <!-- Chat tab content -->
@@ -343,126 +340,127 @@ numbers.sort((a, b) => a - b);</code></pre>
                     <div class="skill-item">
                       <div class="skill-info">
                         <span>JavaScript</span>
-                        <span>65%</span>
+                        <span id="js-skill-value">65%</span>
                       </div>
                       <div class="skill-progress">
-                        <div class="skill-progress-bar" style="width: 65%"></div>
+                        <div class="skill-progress-bar" id="js-skill-bar" style="width: 65%"></div>
                       </div>
                     </div>
                     <div class="skill-item">
                       <div class="skill-info">
                         <span>Problem Solving</span>
-                        <span>78%</span>
+                        <span id="problem-skill-value">78%</span>
                       </div>
                       <div class="skill-progress">
-                        <div class="skill-progress-bar" style="width: 78%"></div>
+                        <div class="skill-progress-bar" id="problem-skill-bar" style="width: 78%"></div>
                       </div>
                     </div>
                     <div class="skill-item">
                       <div class="skill-info">
                         <span>Debugging</span>
-                        <span>42%</span>
+                        <span id="debug-skill-value">42%</span>
                       </div>
                       <div class="skill-progress">
-                        <div class="skill-progress-bar" style="width: 42%"></div>
-                      </div>
-                      <div class="skill-item">
-                        <div class="skill-info">
-                          <span>Code Organization</span>
-                          <span>55%</span>
-                        </div>
-                        <div class="skill-progress">
-                          <div class="skill-progress-bar" style="width: 55%"></div>
-                        </div>
+                        <div class="skill-progress-bar" id="debug-skill-bar" style="width: 42%"></div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div class="stat-card">
-                    <div class="stat-header">
-                      <h4>Learning Streak</h4>
-                      <span class="stat-info" title="Your consecutive days of learning">
-                        <i class="codicon codicon-info"></i>
-                      </span>
-                    </div>
-                    <div class="streak-calendar">
-                      <div class="streak-number">
-                        <span class="streak-days">5</span>
-                        <span class="streak-label">day streak</span>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>Code Organization</span>
+                        <span id="org-skill-value">55%</span>
                       </div>
-                      <div class="streak-grid">
-                        <div class="streak-day active" data-date="2025-04-01"></div>
-                        <div class="streak-day active" data-date="2025-04-02"></div>
-                        <div class="streak-day active" data-date="2025-04-03"></div>
-                        <div class="streak-day active" data-date="2025-04-04"></div>
-                        <div class="streak-day active" data-date="2025-04-05"></div>
-                        <div class="streak-day" data-date="2025-04-06"></div>
-                        <div class="streak-day" data-date="2025-04-07"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="stat-card">
-                    <div class="stat-header">
-                      <h4>Error Resolution Rate</h4>
-                      <span class="stat-info" title="How quickly you resolve coding errors">
-                        <i class="codicon codicon-info"></i>
-                      </span>
-                    </div>
-                    <div class="resolution-stats">
-                      <div class="resolution-chart">
-                        <div class="chart-donut">
-                          <svg viewBox="0 0 36 36" class="circular-chart">
-                            <path class="circle-bg" d="M18 2.0845
-                              a 15.9155 15.9155 0 0 1 0 31.831
-                              a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="circle" stroke-dasharray="75, 100" d="M18 2.0845
-                              a 15.9155 15.9155 0 0 1 0 31.831
-                              a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <text x="18" y="20.35" class="percentage">75%</text>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="resolution-details">
-                        <div class="resolution-stat">
-                          <span class="stat-label">Avg. Time:</span>
-                          <span class="stat-value">14 min</span>
-                        </div>
-                        <div class="resolution-stat">
-                          <span class="stat-label">Errors Fixed:</span>
-                          <span class="stat-value">23</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="stat-card">
-                    <div class="stat-header">
-                      <h4>Most Active Times</h4>
-                      <span class="stat-info" title="When you are most active coding">
-                        <i class="codicon codicon-info"></i>
-                      </span>
-                    </div>
-                    <div class="active-times">
-                      <div class="time-bar-chart">
-                        <div class="time-bar" style="height: 30%;" data-time="9AM"></div>
-                        <div class="time-bar" style="height: 40%;" data-time="12PM"></div>
-                        <div class="time-bar" style="height: 60%;" data-time="3PM"></div>
-                        <div class="time-bar" style="height: 100%;" data-time="6PM"></div>
-                        <div class="time-bar" style="height: 80%;" data-time="9PM"></div>
-                        <div class="time-bar" style="height: 35%;" data-time="12AM"></div>
-                      </div>
-                      <div class="time-labels">
-                        <span>9AM</span>
-                        <span>12PM</span>
-                        <span>3PM</span>
-                        <span>6PM</span>
-                        <span>9PM</span>
-                        <span>12AM</span>
+                      <div class="skill-progress">
+                        <div class="skill-progress-bar" id="org-skill-bar" style="width: 55%"></div>
                       </div>
                     </div>
                   </div>
                 </div>
+                  
+                <div class="stat-card">
+                  <div class="stat-header">
+                    <h4>Learning Streak</h4>
+                    <span class="stat-info" title="Your consecutive days of learning">
+                      <i class="codicon codicon-info"></i>
+                    </span>
+                  </div>
+                  <div class="streak-calendar">
+                    <div class="streak-number">
+                      <span class="streak-days" id="streak-count">5</span>
+                      <span class="streak-label">day streak</span>
+                    </div>
+                    <div class="streak-grid" id="streak-grid">
+                      <div class="streak-day active" data-date="2025-04-01"></div>
+                      <div class="streak-day active" data-date="2025-04-02"></div>
+                      <div class="streak-day active" data-date="2025-04-03"></div>
+                      <div class="streak-day active" data-date="2025-04-04"></div>
+                      <div class="streak-day active" data-date="2025-04-05"></div>
+                      <div class="streak-day" data-date="2025-04-06"></div>
+                      <div class="streak-day" data-date="2025-04-07"></div>
+                    </div>
+                  </div>
+                </div>
+                  
+                <div class="stat-card">
+                  <div class="stat-header">
+                    <h4>Error Resolution Rate</h4>
+                    <span class="stat-info" title="How quickly you resolve coding errors">
+                      <i class="codicon codicon-info"></i>
+                    </span>
+                  </div>
+                  <div class="resolution-stats">
+                    <div class="resolution-chart">
+                      <div class="chart-donut">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                          <path class="circle-bg" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                          <path class="circle" id="resolution-circle" stroke-dasharray="75, 100" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                          <text x="18" y="20.35" class="percentage" id="resolution-percentage">75%</text>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="resolution-details">
+                      <div class="resolution-stat">
+                        <span class="stat-label">Avg. Time:</span>
+                        <span class="stat-value" id="avg-resolution-time">14 min</span>
+                      </div>
+                      <div class="resolution-stat">
+                        <span class="stat-label">Errors Fixed:</span>
+                        <span class="stat-value" id="errors-fixed-count">23</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  
+                <div class="stat-card">
+                  <div class="stat-header">
+                    <h4>Most Active Times</h4>
+                    <span class="stat-info" title="When you are most active coding">
+                      <i class="codicon codicon-info"></i>
+                    </span>
+                  </div>
+                  <div class="active-times">
+                    <div class="time-bar-chart" id="time-bar-chart">
+                      <div class="time-bar" style="height: 30%;" data-time="9AM"></div>
+                      <div class="time-bar" style="height: 40%;" data-time="12PM"></div>
+                      <div class="time-bar" style="height: 60%;" data-time="3PM"></div>
+                      <div class="time-bar" style="height: 100%;" data-time="6PM"></div>
+                      <div class="time-bar" style="height: 80%;" data-time="9PM"></div>
+                      <div class="time-bar" style="height: 35%;" data-time="12AM"></div>
+                    </div>
+                    <div class="time-labels">
+                      <span>9AM</span>
+                      <span>12PM</span>
+                      <span>3PM</span>
+                      <span>6PM</span>
+                      <span>9PM</span>
+                      <span>12AM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <div class="weekly-goals-section">
                 <div class="progress-header">
@@ -502,91 +500,6 @@ numbers.sort((a, b) => a - b);</code></pre>
           </div>
         </div>
       </div>
-
-      <!-- Achievements tab content -->
-      <div class="tab-content" id="achievements-tab">
-  <div class="achievements-container" style="display: block; width: 100%; height: 100%; padding: 1.5rem;">
-    <div class="achievements-header">
-      <h2>Your Achievements</h2>
-      <div class="achievements-stats">
-        <div class="achievement-stat">
-          <span id="achievements-earned">0</span>
-          <span>Earned</span>
-        </div>
-        <div class="achievement-stat">
-          <span id="achievements-total">15</span>
-          <span>Total</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="achievements-categories">
-      <button class="category-button active" data-category="all">All</button>
-      <button class="category-button" data-category="coding">Coding Skills</button>
-      <button class="category-button" data-category="learning">Learning</button>
-      <button class="category-button" data-category="problem-solving">Problem Solving</button>
-      <button class="category-button" data-category="milestones">Milestones</button>
-    </div>
-
-    <!-- Static achievement cards that will always show -->
-    <div class="achievements-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
-      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
-        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
-        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
-          <i class="codicon codicon-comment"></i>
-        </div>
-        <div class="achievement-content">
-          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Conversation Starter</div>
-          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Started your first conversation with the AI mentor</div>
-        </div>
-      </div>
-      
-      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
-        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
-        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
-          <i class="codicon codicon-debug"></i>
-        </div>
-        <div class="achievement-content">
-          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Bug Squasher</div>
-          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Successfully resolved your first coding error</div>
-        </div>
-      </div>
-      
-      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
-        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
-        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
-          <i class="codicon codicon-calendar"></i>
-        </div>
-        <div class="achievement-content">
-          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Persistent Learner</div>
-          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Used the AI mentor for 5 consecutive days</div>
-        </div>
-      </div>
-      
-      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
-        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
-        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
-          <i class="codicon codicon-question"></i>
-        </div>
-        <div class="achievement-content">
-          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Question Master</div>
-          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Asked 10 meaningful questions</div>
-        </div>
-      </div>
-      
-      <div class="achievement-card locked" style="background-color: var(--light-bg); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-height: 180px; position: relative;">
-        <div class="achievement-lock"><i class="codicon codicon-lock"></i></div>
-        <div class="achievement-icon" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6c757d, #555); color: white; font-size: 1.5rem;">
-          <i class="codicon codicon-refresh"></i>
-        </div>
-        <div class="achievement-content">
-          <div class="achievement-title" style="font-size: 1.1rem; font-weight: 600;">Loop Expert</div>
-          <div class="achievement-description" style="font-size: 0.9rem; color: var(--text-secondary);">Demonstrated understanding of complex loop concepts</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
     </main>
   </div>
 
@@ -623,10 +536,6 @@ numbers.sort((a, b) => a - b);</code></pre>
           <div class="shortcut-item">
             <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>2</kbd></span>
             <span class="shortcut-description">Switch to Learning Journal tab</span>
-          </div>
-          <div class="shortcut-item">
-            <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>3</kbd></span>
-            <span class="shortcut-description">Switch to Achievements tab</span>
           </div>
           <div class="shortcut-item">
             <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
@@ -675,6 +584,23 @@ numbers.sort((a, b) => a - b);</code></pre>
       const notificationMessage = document.getElementById('notification-message');
       const closeNotificationBtn = document.getElementById('close-notification-btn');
       
+      // Learning analytics elements
+      const jsSkillValue = document.getElementById('js-skill-value');
+      const jsSkillBar = document.getElementById('js-skill-bar');
+      const problemSkillValue = document.getElementById('problem-skill-value');
+      const problemSkillBar = document.getElementById('problem-skill-bar');
+      const debugSkillValue = document.getElementById('debug-skill-value');
+      const debugSkillBar = document.getElementById('debug-skill-bar');
+      const orgSkillValue = document.getElementById('org-skill-value');
+      const orgSkillBar = document.getElementById('org-skill-bar');
+      const streakCount = document.getElementById('streak-count');
+      const streakGrid = document.getElementById('streak-grid');
+      const resolutionCircle = document.getElementById('resolution-circle');
+      const resolutionPercentage = document.getElementById('resolution-percentage');
+      const avgResolutionTime = document.getElementById('avg-resolution-time');
+      const errorsFixedCount = document.getElementById('errors-fixed-count');
+      const timeBarChart = document.getElementById('time-bar-chart');
+      
       // Initialize with stored state
       const state = vscode.getState() || { 
         messages: [],
@@ -687,7 +613,40 @@ numbers.sort((a, b) => a - b);</code></pre>
         theme: 'default',
         weeklyGoals: [],
         activities: [],
-        achievements: []
+        learningStats: {
+          skills: {
+            javascript: 65,
+            problemSolving: 78,
+            debugging: 42,
+            codeOrganization: 55
+          },
+          streak: {
+            currentStreak: 5,
+            lastActive: new Date().toISOString(),
+            activeDays: ["2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04", "2025-04-05"]
+          },
+          errorResolution: {
+            rate: 75,
+            avgTime: 14,
+            totalFixed: 23
+          },
+          activeTimes: {
+            "9AM": 30,
+            "12PM": 40,
+            "3PM": 60,
+            "6PM": 100,
+            "9PM": 80,
+            "12AM": 35
+          },
+          progressHistory: [
+            { date: "2025-03-01", value: 10 },
+            { date: "2025-03-08", value: 25 },
+            { date: "2025-03-15", value: 40 },
+            { date: "2025-03-22", value: 55 },
+            { date: "2025-03-29", value: 65 },
+            { date: "2025-04-05", value: 80 }
+          ]
+        }
       };
       
       // Apply saved theme on load
@@ -699,6 +658,9 @@ numbers.sort((a, b) => a - b);</code></pre>
       vscode.postMessage({
         command: 'checkApiKey'
       });
+      
+      // Initialize learning analytics
+      initializeLearningAnalytics();
       
       // Handle sending messages
       function sendMessage() {
@@ -719,6 +681,9 @@ numbers.sort((a, b) => a - b);</code></pre>
 
         // Update experience
         updateExperience();
+        
+        // Update learning stats
+        updateLearningStats('messaging');
       }
       
       // Add message to UI
@@ -934,8 +899,259 @@ numbers.sort((a, b) => a - b);</code></pre>
         
         errorsResolved.textContent = errors.toString();
         conceptsLearned.textContent = concepts.toString();
-        practiceTime.textContent = 'N/A';
-        codeQuality.textContent = 'N/A';
+        
+        // Calculate practice time based on activities
+        const totalMinutes = activities.length * 5; // Assume 5 minutes per activity
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        practiceTime.textContent = `${hours}h ${minutes}m`;
+        
+        // Calculate code quality score based on error resolution rate
+        const qualityScore = state.learningStats.errorResolution.rate;
+        codeQuality.textContent = `${qualityScore}%`;
+      }
+      
+      // Initialize learning analytics
+      function initializeLearningAnalytics() {
+        // Update skill bars
+        updateSkillBars();
+        
+        // Update streak calendar
+        updateStreakCalendar();
+        
+        // Update error resolution stats
+        updateErrorResolutionStats();
+        
+        // Update active times chart
+        updateActiveTimesChart();
+        
+        // Initialize learning progress chart
+        initializeLearningProgressChart();
+      }
+      
+      // Update skill bars
+      function updateSkillBars() {
+        const skills = state.learningStats.skills;
+        
+        jsSkillValue.textContent = `${skills.javascript}%`;
+        jsSkillBar.style.width = `${skills.javascript}%`;
+        
+        problemSkillValue.textContent = `${skills.problemSolving}%`;
+        problemSkillBar.style.width = `${skills.problemSolving}%`;
+        
+        debugSkillValue.textContent = `${skills.debugging}%`;
+        debugSkillBar.style.width = `${skills.debugging}%`;
+        
+        orgSkillValue.textContent = `${skills.codeOrganization}%`;
+        orgSkillBar.style.width = `${skills.codeOrganization}%`;
+      }
+      
+      // Update streak calendar
+      function updateStreakCalendar() {
+        const streak = state.learningStats.streak;
+        
+        streakCount.textContent = streak.currentStreak;
+        
+        // Clear existing streak days
+        streakGrid.innerHTML = '';
+        
+        // Get the last 7 days
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          const dateString = date.toISOString().split('T')[0];
+          
+          const dayElement = document.createElement('div');
+          dayElement.className = 'streak-day';
+          dayElement.setAttribute('data-date', dateString);
+          
+          if (streak.activeDays.includes(dateString)) {
+            dayElement.classList.add('active');
+          }
+          
+          streakGrid.appendChild(dayElement);
+        }
+      }
+      
+      // Update error resolution stats
+      function updateErrorResolutionStats() {
+        const errorStats = state.learningStats.errorResolution;
+        
+        resolutionCircle.setAttribute('stroke-dasharray', `${errorStats.rate}, 100`);
+        resolutionPercentage.textContent = `${errorStats.rate}%`;
+        avgResolutionTime.textContent = `${errorStats.avgTime} min`;
+        errorsFixedCount.textContent = errorStats.totalFixed;
+      }
+      
+      // Update active times chart
+      function updateActiveTimesChart() {
+        const activeTimes = state.learningStats.activeTimes;
+        
+        // Clear existing bars
+        timeBarChart.innerHTML = '';
+        
+        // Add bars for each time
+        for (const [time, value] of Object.entries(activeTimes)) {
+          const bar = document.createElement('div');
+          bar.className = 'time-bar';
+          bar.style.height = `${value}%`;
+          bar.setAttribute('data-time', time);
+          timeBarChart.appendChild(bar);
+        }
+      }
+      
+      // Initialize learning progress chart
+      function initializeLearningProgressChart() {
+        const canvas = document.getElementById('learning-progress-chart');
+        const ctx = canvas.getContext('2d');
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Set canvas dimensions
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = 300;
+        
+        // Get progress history data
+        const progressData = state.learningStats.progressHistory;
+        
+        // Draw chart background
+        ctx.fillStyle = 'rgba(77, 132, 255, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw axes
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(50, 30);
+        ctx.lineTo(50, canvas.height - 30);
+        ctx.lineTo(canvas.width - 30, canvas.height - 30);
+        ctx.stroke();
+        
+        // Draw labels
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        
+        // Y-axis labels
+        for (let i = 0; i <= 100; i += 20) {
+          const y = canvas.height - 30 - (i / 100) * (canvas.height - 60);
+          ctx.fillText(i.toString(), 45, y);
+        }
+        
+        // X-axis labels
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        
+        const xStep = (canvas.width - 80) / (progressData.length - 1);
+        progressData.forEach((point, index) => {
+          const x = 50 + index * xStep;
+          const date = new Date(point.date);
+          const label = `${date.getMonth() + 1}/${date.getDate()}`;
+          ctx.fillText(label, x, canvas.height - 25);
+        });
+        
+        // Draw progress line
+        ctx.strokeStyle = 'rgba(77, 132, 255, 1)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        progressData.forEach((point, index) => {
+          const x = 50 + index * xStep;
+          const y = canvas.height - 30 - (point.value / 100) * (canvas.height - 60);
+          
+          if (index === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+        
+        ctx.stroke();
+        
+        // Draw points
+        ctx.fillStyle = 'rgba(77, 132, 255, 1)';
+        
+        progressData.forEach((point, index) => {
+          const x = 50 + index * xStep;
+          const y = canvas.height - 30 - (point.value / 100) * (canvas.height - 60);
+          
+          ctx.beginPath();
+          ctx.arc(x, y, 5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      
+      // Update learning stats
+      function updateLearningStats(activity) {
+        const stats = state.learningStats;
+        
+        // Update based on activity type
+        switch (activity) {
+          case 'messaging':
+            // Increase JavaScript skill
+            stats.skills.javascript = Math.min(stats.skills.javascript + 1, 100);
+            break;
+            
+          case 'error':
+            // Increase debugging skill
+            stats.skills.debugging = Math.min(stats.skills.debugging + 2, 100);
+            // Update error resolution stats
+            stats.errorResolution.totalFixed++;
+            break;
+            
+          case 'challenge':
+            // Increase problem solving skill
+            stats.skills.problemSolving = Math.min(stats.skills.problemSolving + 3, 100);
+            break;
+        }
+        
+        // Update streak
+        const today = new Date().toISOString().split('T')[0];
+        if (!stats.streak.activeDays.includes(today)) {
+          stats.streak.activeDays.push(today);
+          
+          // Check if streak continues
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayString = yesterday.toISOString().split('T')[0];
+          
+          if (stats.streak.activeDays.includes(yesterdayString)) {
+            stats.streak.currentStreak++;
+          } else {
+            stats.streak.currentStreak = 1;
+          }
+        }
+        
+        // Update active times
+        const hour = new Date().getHours();
+        let timeKey;
+        
+        if (hour < 3) timeKey = '12AM';
+        else if (hour < 6) timeKey = '3AM';
+        else if (hour < 9) timeKey = '6AM';
+        else if (hour < 12) timeKey = '9AM';
+        else if (hour < 15) timeKey = '12PM';
+        else if (hour < 18) timeKey = '3PM';
+        else if (hour < 21) timeKey = '6PM';
+        else timeKey = '9PM';
+        
+        stats.activeTimes[timeKey] = (stats.activeTimes[timeKey] || 0) + 5;
+        
+        // Save updated stats
+        state.learningStats = stats;
+        vscode.setState(state);
+        
+        // Update UI
+        initializeLearningAnalytics();
+        
+        // Send to extension
+        vscode.postMessage({
+          command: 'updateLearningStats',
+          stats: stats
+        });
       }
       
       // Theme selection
@@ -949,9 +1165,6 @@ numbers.sort((a, b) => a - b);</code></pre>
           if (dropdownContent) {
             dropdownContent.classList.remove('show');
           }
-          
-          // Log theme change for debugging
-          console.log('Theme changed to:', themeName);
         });
       });
       
@@ -960,7 +1173,6 @@ numbers.sort((a, b) => a - b);</code></pre>
         e.stopPropagation();
         const dropdownContent = document.querySelector('.dropdown-content');
         dropdownContent.classList.toggle('show');
-        console.log('Dropdown toggled');
       });
       
       // Close dropdown when clicking outside
@@ -991,6 +1203,9 @@ numbers.sort((a, b) => a - b);</code></pre>
         vscode.postMessage({
           command: 'explainError'
         });
+        
+        // Update learning stats
+        updateLearningStats('error');
       });
       
       setApiKeyBtn.addEventListener('click', () => {
@@ -1010,6 +1225,9 @@ numbers.sort((a, b) => a - b);</code></pre>
           const goalId = btn.getAttribute('data-goal-id');
           if (goalId) {
             updateGoalProgress(goalId, 1);
+            
+            // Update learning stats
+            updateLearningStats('challenge');
           }
         });
       });
@@ -1032,16 +1250,6 @@ numbers.sort((a, b) => a - b);</code></pre>
           tabContents.forEach(content => content.classList.remove('active'));
           document.getElementById(`${tab}-tab`).classList.add('active');
           
-          if (tab === 'achievements') {
-            // Force display of achievements when switching to the tab
-            displayAchievements(state.achievements || [], 'all');
-            
-            // If no achievements exist yet, initialize with defaults
-            if (!state.achievements || state.achievements.length === 0) {
-              initializeDefaultAchievements();
-            }
-          }
-          
           // Update state
           state.activeTab = tab;
           vscode.setState(state);
@@ -1051,6 +1259,9 @@ numbers.sort((a, b) => a - b);</code></pre>
             vscode.postMessage({
               command: 'openLearningJournal'
             });
+            
+            // Refresh learning analytics
+            initializeLearningAnalytics();
           }
         });
       });
@@ -1127,6 +1338,9 @@ numbers.sort((a, b) => a - b);</code></pre>
             
             document.querySelector('[data-tab="journal"]').classList.add('active');
             document.getElementById('journal-tab').classList.add('active');
+            
+            // Refresh learning analytics
+            initializeLearningAnalytics();
             break;
             
           case 'apiKeyStatus':
@@ -1167,34 +1381,11 @@ numbers.sort((a, b) => a - b);</code></pre>
             displayActivities(state.activities, timeFilter.value);
             break;
 
-          case 'updateAchievements':
-            state.achievements = message.achievements;
+          case 'updateLearningStats':
+            // Update learning stats
+            state.learningStats = message.stats;
             vscode.setState(state);
-            
-            // Display achievements
-            const activeCategory = document.querySelector('.category-button.active')?.getAttribute('data-category') || 'all';
-            displayAchievements(message.achievements, activeCategory, message.newUnlock);
-            
-            // Show notification if there's a new unlock
-            if (message.newUnlock) {
-              const unlockedAchievement = message.achievements.find(a => a.id === message.newUnlock);
-              if (unlockedAchievement) {
-                const achievementNotif = document.createElement('div');
-                achievementNotif.className = 'level-up-notification';
-                achievementNotif.innerHTML = `
-                  <i class="codicon codicon-trophy"></i> Achievement Unlocked: ${unlockedAchievement.title}
-                `;
-                document.body.appendChild(achievementNotif);
-                
-                // Remove notification after animation
-                setTimeout(() => {
-                  achievementNotif.classList.add('fade-out');
-                  setTimeout(() => {
-                    document.body.removeChild(achievementNotif);
-                  }, 500);
-                }, 4000);
-              }
-            }
+            initializeLearningAnalytics();
             break;
 
           case 'showNotification':
@@ -1229,84 +1420,6 @@ numbers.sort((a, b) => a - b);</code></pre>
       if (state.activities) {
         displayActivities(state.activities, timeFilter.value);
       }
-
-      // Initialize achievements UI
-      if (state.achievements) {
-        displayAchievements(state.achievements, 'all');
-      }
-      
-// Achievements handling
-function displayAchievements(achievements, category = 'all', newUnlockId = null) {
-  const achievementsGrid = document.getElementById('achievements-grid');
-  achievementsGrid.innerHTML = '';
-  
-  // Filter achievements by category
-  let filteredAchievements = achievements;
-  if (category !== 'all') {
-    filteredAchievements = achievements.filter(achievement => achievement.category === category);
-  }
-  
-  // Sort achievements: unlocked first (newest to oldest), then locked
-  filteredAchievements.sort((a, b) => {
-    if (a.unlockedAt && b.unlockedAt) {
-      return new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime();
-    }
-    if (a.unlockedAt) return -1;
-    if (b.unlockedAt) return 1;
-    return 0;
-  });
-  
-  // Update stats
-  const earnedCount = achievements.filter(a => a.unlockedAt).length;
-  document.getElementById('achievements-earned').textContent = earnedCount;
-  document.getElementById('achievements-total').textContent = achievements.length;
-  
-  // Add each achievement to the grid
-  filteredAchievements.forEach(achievement => {
-    const isUnlocked = !!achievement.unlockedAt;
-    const unlockedDate = isUnlocked ? new Date(achievement.unlockedAt).toLocaleDateString([], { 
-      year: 'numeric', month: 'short', day: 'numeric' 
-    }) : null;
-    
-    const achievementCard = document.createElement('div');
-    achievementCard.className = `achievement-card ${isUnlocked ? '' : 'locked'}`;
-    achievementCard.setAttribute('data-id', achievement.id);
-    
-    if (achievement.id === newUnlockId) {
-      achievementCard.classList.add('achievement-unlock-animation');
-    }
-    
-    achievementCard.innerHTML = `
-      ${isUnlocked && achievement.isNew ? '<div class="achievement-new-badge">NEW</div>' : ''}
-      ${!isUnlocked ? '<div class="achievement-lock"><i class="codicon codicon-lock"></i></div>' : ''}
-      <div class="achievement-icon">
-        <i class="codicon codicon-${achievement.icon}"></i>
-      </div>
-      <div class="achievement-content">
-        <div class="achievement-title">${achievement.title}</div>
-        <div class="achievement-description">${achievement.description}</div>
-        ${isUnlocked ? `<div class="achievement-date">Unlocked on ${unlockedDate}</div>` : ''}
-      </div>
-    `;
-    
-    achievementsGrid.appendChild(achievementCard);
-  });
-}
-
-// Category filter buttons
-const categoryButtons = document.querySelectorAll('.category-button');
-categoryButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const category = button.getAttribute('data-category');
-    
-    // Update active button
-    categoryButtons.forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    
-    // Display filtered achievements
-    displayAchievements(state.achievements || [], category);
-  });
-});
 
       // Show/hide code snippets panel
       showSnippetsBtn.addEventListener('click', () => {
@@ -1359,13 +1472,7 @@ categoryButtons.forEach(button => {
               tabContents.forEach(content => content.classList.remove('active'));
               document.querySelector('[data-tab="journal"]').classList.add('active');
               document.getElementById('journal-tab').classList.add('active');
-              break;
-            case '3':
-              // Switch to Achievements tab
-              tabButtons.forEach(btn => btn.classList.remove('active'));
-              tabContents.forEach(content => content.classList.remove('active'));
-              document.querySelector('[data-tab="achievements"]').classList.add('active');
-              document.getElementById('achievements-tab').classList.add('active');
+              initializeLearningAnalytics();
               break;
             case '/':
               keyboardShortcutsModal.classList.remove('hidden');
@@ -1373,63 +1480,15 @@ categoryButtons.forEach(button => {
           }
         }
       });
+      
+      // Handle window resize for chart
+      window.addEventListener('resize', () => {
+        initializeLearningProgressChart();
+      });
+      
+      // Initialize learning analytics on load
+      initializeLearningAnalytics();
     })();
   </script>
-  <!-- Add this script at the end of the body, just before the closing </body> tag -->
-<script nonce="{{nonce}}">
-  // Add a direct initialization script to ensure the achievements tab works
-  (function() {
-    console.log('Direct initialization script running');
-    
-    // Force the achievements tab to be properly initialized
-    const achievementsTab = document.getElementById('achievements-tab');
-    if (achievementsTab) {
-      // Make sure it has the right styles
-      achievementsTab.style.display = 'none'; // Initially hidden
-      achievementsTab.style.width = '100%';
-      achievementsTab.style.height = '100%';
-      achievementsTab.style.overflow = 'auto';
-      
-      // Check if it should be active
-      if (document.querySelector('.tab-button[data-tab="achievements"]').classList.contains('active')) {
-        achievementsTab.style.display = 'block';
-        console.log('Achievements tab activated on initial load');
-      }
-    } else {
-      console.error('Achievements tab element not found during direct initialization');
-    }
-    
-    // Add direct click handler to achievements tab button
-    const achievementsButton = document.querySelector('.tab-button[data-tab="achievements"]');
-    if (achievementsButton) {
-      achievementsButton.addEventListener('click', function() {
-        console.log('Achievements button clicked (direct handler)');
-        
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-          tab.style.display = 'none';
-          tab.classList.remove('active');
-        });
-        
-        // Show achievements tab
-        const achievementsTab = document.getElementById('achievements-tab');
-        if (achievementsTab) {
-          achievementsTab.style.display = 'block';
-          achievementsTab.classList.add('active');
-          console.log('Achievements tab displayed (direct handler)');
-        } else {
-          console.error('Achievements tab not found (direct handler)');
-        }
-        
-        // Update button states
-        document.querySelectorAll('.tab-button').forEach(btn => {
-          btn.classList.remove('active');
-        });
-        this.classList.add('active');
-      });
-    }
-  })();
-</script>
 </body>
 </html>
-
