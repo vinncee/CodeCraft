@@ -2384,3 +2384,44 @@ kbd {
   display: block !important;
 }
 
+/* Add these styles for the encouraging message */
+.encouraging-message {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-md);
+  background-color: rgba(77, 132, 255, 0.1);
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.encouraging-message.hidden {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.encouraging-message.fade-out {
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.encouraging-message.pulse {
+  animation: pulse 1s ease-in-out;
+}

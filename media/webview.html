@@ -231,6 +231,8 @@ numbers.sort((a, b) => a - b);</code></pre>
               <span id="level-progress">0/100</span>
             </div>
           </div>
+          <!-- Add the encouraging message element here -->
+          <div id="encouraging-message" class="encouraging-message hidden"></div>
         </div>
       </div>
 
@@ -579,7 +581,6 @@ numbers.sort((a, b) => a - b);</code></pre>
       const codeSnippetsPanel = document.getElementById('code-snippets-panel');
       const showKeyboardShortcutsBtn = document.getElementById('show-keyboard-shortcuts-btn');
       const keyboardShortcutsModal = document.getElementById('keyboard-shortcuts-modal');
-      const closeShortcutsModalBtn = document.getElementById('close-shortcuts-modal-btn');
       const notificationBanner = document.getElementById('notification-banner');
       const notificationMessage = document.getElementById('notification-message');
       const closeNotificationBtn = document.getElementById('close-notification-btn');
@@ -722,7 +723,7 @@ numbers.sort((a, b) => a - b);</code></pre>
         vscode.setState(state);
       }
       
-      // Update experience
+      // Find the updateExperience function and modify it to include the encouraging message
       function updateExperience() {
         // Only add exp for user messages
         const expGain = 10;
@@ -766,6 +767,9 @@ numbers.sort((a, b) => a - b);</code></pre>
         document.getElementById('current-level').textContent = state.level;
         document.getElementById('level-progress').textContent = `${state.exp}/${state.expToNextLevel}`;
         
+        // Show encouraging message
+        showEncouragingMessage(expGain);
+        
         // Save state
         vscode.setState(state);
 
@@ -780,6 +784,38 @@ numbers.sort((a, b) => a - b);</code></pre>
         updateGoalProgress('learning', 1);
       }
 
+      // Add this function to show encouraging messages
+      function showEncouragingMessage(expGained) {
+        const encouragingMessages = [
+          "Great job! Keep up the good work!",
+          "You're making excellent progress!",
+          "Your coding skills are growing!",
+          "Keep it up! Practice makes perfect!",
+          "You're on the right track!",
+          "Awesome work! +10 XP gained!",
+          "Your dedication is paying off!",
+          "Every question brings you closer to mastery!",
+          "Learning in progress... looking good!",
+          "Fantastic effort! Keep coding!"
+        ];
+        
+        const messageElement = document.getElementById('encouraging-message');
+        const randomMessage = encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)];
+        
+        messageElement.textContent = randomMessage;
+        messageElement.classList.remove('hidden');
+        messageElement.classList.add('pulse');
+        
+        // Remove the message after a delay
+        setTimeout(() => {
+          messageElement.classList.add('fade-out');
+          setTimeout(() => {
+            messageElement.classList.add('hidden');
+            messageElement.classList.remove('fade-out', 'pulse');
+          }, 500);
+        }, 3000);
+      }
+      
       // Apply theme
       function applyTheme(themeName) {
         // Remove all theme classes

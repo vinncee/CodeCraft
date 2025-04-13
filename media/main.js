@@ -720,3 +720,399 @@ window.addEventListener("error", (event) => {
   }
 })
 
+// Add these functions to handle the learning analytics
+
+// Function to update all learning analytics
+function updateLearningAnalytics(stats) {
+  // Update metrics
+  document.getElementById("errors-resolved").textContent = stats.errorResolution.totalFixed
+  document.getElementById("concepts-learned").textContent = stats.conceptsLearned.length
+
+  // Format practice time
+  const hours = Math.floor(stats.totalPracticeTime / 60)
+  const minutes = stats.totalPracticeTime % 60
+  document.getElementById("practice-time").textContent = `${hours}h ${minutes}m`
+
+  // Update code quality based on error resolution rate
+  document.getElementById("code-quality").textContent = `${stats.errorResolution.rate}%`
+
+  // Update code metrics
+  document.getElementById("lines-written").textContent = stats.codeMetrics.linesWritten
+  document.getElementById("files-accessed").textContent = stats.codeMetrics.filesAccessed
+
+  // Update language distribution chart
+  updateLanguageDistributionChart(stats.codeMetrics.languageDistribution)
+
+  // Update error types chart
+  updateErrorTypesChart(stats.errorResolution.errorTypes)
+
+  // Update weekly activity chart
+  updateWeeklyActivityChart(stats.weeklyActivity)
+
+  // Update concepts learned grid
+  updateConceptsLearnedGrid(stats.conceptsLearned)
+
+  // Update learning sessions list
+  updateLearningSessionsList(stats.sessions)
+}
+
+// Function to update language distribution chart
+function updateLanguageDistributionChart(languageDistribution) {
+  const canvas = document.getElementById("language-distribution-chart")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d")
+  if (!ctx) return
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  // Set canvas dimensions
+  canvas.width = canvas.parentElement.clientWidth
+  canvas.height = 200
+
+  // Extract data
+  const languages = Object.keys(languageDistribution)
+  const counts = Object.values(languageDistribution)
+  const total = counts.reduce((sum, count) => sum + count, 0)
+
+  if (total === 0) {
+    // No data yet
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
+    ctx.font = "14px sans-serif"
+    ctx.textAlign = "center"
+    ctx.fillText("No language data available yet", canvas.width / 2, canvas.height / 2)
+    return
+  }
+
+  // Colors for different languages
+  const colors = [
+    "rgba(77, 132, 255, 0.8)",
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(255, 206, 86, 0.8)",
+    "rgba(75, 192, 192, 0.8)",
+    "rgba(153, 102, 255, 0.8)",
+    "rgba(255, 159, 64, 0.8)",
+  ]
+
+  // Draw pie chart
+  let startAngle = 0
+  const centerX = canvas.width / 2
+  const centerY = canvas.height / 2
+  const radius = Math.min(centerX, centerY) - 10
+
+  languages.forEach((language, index) => {
+    const percentage = counts[index] / total
+    const endAngle = startAngle + percentage * Math.PI * 2
+
+    // Draw slice
+    ctx.beginPath()
+    ctx.moveTo(centerX, centerY)
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle)
+    ctx.closePath()
+    ctx.fillStyle = colors[index % colors.length]
+    ctx.fill()
+
+    // Draw label
+    const labelAngle = startAngle + (endAngle - startAngle) / 2
+    const labelX = centerX + Math.cos(labelAngle) * (radius * 0.7)
+    const labelY = centerY + Math.sin(labelAngle) * (radius * 0.7)
+
+    ctx.fillStyle = "white"
+    ctx.font = "12px sans-serif"
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
+    ctx.fillText(`${language} (${Math.round(percentage * 100)}%)`, labelX, labelY)
+
+    startAngle = endAngle
+  })
+}
+
+// Function to update error types chart
+function updateErrorTypesChart(errorTypes) {
+  const canvas = document.getElementById("error-types-chart")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d")
+  if (!ctx) return
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  // Set canvas dimensions
+  canvas.width = canvas.parentElement.clientWidth
+  canvas.height = 200
+
+  // Extract data
+  const types = Object.keys(errorTypes)
+  const counts = Object.values(errorTypes)
+  const total = counts.reduce((sum, count) => sum + count, 0)
+
+  if (total === 0) {
+    // No data yet
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
+    ctx.font = "14px sans-serif"
+    ctx.textAlign = "center"
+    ctx.fillText("No error data available yet", canvas.width / 2, canvas.height / 2)
+    return
+  }
+
+  // Colors for different error types
+  const colors = [
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(255, 159, 64, 0.8)",
+    "rgba(255, 206, 86, 0.8)",
+    "rgba(75, 192, 192, 0.8)",
+    "rgba(153, 102, 255, 0.8)",
+  ]
+
+  // Calculate bar width and spacing
+  const barWidth = (canvas.width - 60) / types.length - 10
+  const maxCount = Math.max(...counts)
+
+  // Draw bars
+  types.forEach((type, index) => {
+    const x = 50 + index * (barWidth + 10)
+    const barHeight = (counts[index] / maxCount) * (canvas.height - 60)
+    const y = canvas.height - 30 - barHeight
+
+    // Draw bar
+    ctx.fillStyle = colors[index % colors.length]
+    ctx.fillRect(x, y, barWidth, barHeight)
+
+    // Draw label
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
+    ctx.font = "10px sans-serif"
+    ctx.textAlign = "center"
+    ctx.fillText(type, x + barWidth / 2, canvas.height - 15)
+
+    // Draw count
+    ctx.fillText(counts[index].toString(), x + barWidth / 2, y - 5)
+  })
+}
+
+// Function to update weekly activity chart
+function updateWeeklyActivityChart(weeklyActivity) {
+  const canvas = document.getElementById("weekly-activity-chart")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d")
+  if (!ctx) return
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  // Set canvas dimensions
+  canvas.width = canvas.parentElement.clientWidth
+  canvas.height = 200
+
+  // Day labels
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+  // Calculate bar width and spacing
+  const barWidth = (canvas.width - 60) / 7 - 10
+  const maxActivity = Math.max(...weeklyActivity, 1) // Avoid division by zero
+
+  // Draw bars
+  weeklyActivity.forEach((activity, index) => {
+    const x = 50 + index * (barWidth + 10)
+    const barHeight = (activity / maxActivity) * (canvas.height - 60)
+    const y = canvas.height - 30 - barHeight
+
+    // Draw bar
+    ctx.fillStyle = "rgba(77, 132, 255, 0.8)"
+    ctx.fillRect(x, y, barWidth, barHeight)
+
+    // Draw day label
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
+    ctx.font = "12px sans-serif"
+    ctx.textAlign = "center"
+    ctx.fillText(days[index], x + barWidth / 2, canvas.height - 15)
+
+    // Draw activity minutes
+    ctx.fillText(`${activity}m`, x + barWidth / 2, y - 5)
+  })
+}
+
+// Function to update concepts learned grid
+function updateConceptsLearnedGrid(concepts) {
+  const conceptsGrid = document.getElementById("concepts-grid")
+  if (!conceptsGrid) return
+
+  // Clear existing concepts
+  conceptsGrid.innerHTML = ""
+
+  // Add each concept as a badge
+  concepts.forEach((concept) => {
+    const conceptBadge = document.createElement("div")
+    conceptBadge.className = "concept-badge"
+    conceptBadge.textContent = concept
+    conceptsGrid.appendChild(conceptBadge)
+  })
+}
+
+// Function to update learning sessions list
+function updateLearningSessionsList(sessions) {
+  const sessionsList = document.getElementById("sessions-list")
+  if (!sessionsList) return
+
+  // Clear existing sessions
+  sessionsList.innerHTML = ""
+
+  // Sort sessions by start time (newest first)
+  const sortedSessions = [...sessions].sort((a, b) => {
+    return new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+  })
+
+  // Add each session
+  sortedSessions.slice(0, 5).forEach((session) => {
+    const sessionItem = document.createElement("div")
+    sessionItem.className = "session-item"
+
+    // Format date
+    const sessionDate = new Date(session.startTime)
+    const formattedDate = sessionDate.toLocaleDateString([], {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+
+    // Format duration
+    const hours = Math.floor(session.duration / 60)
+    const minutes = session.duration % 60
+    const formattedDuration = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+
+    // Create session content
+    sessionItem.innerHTML = `
+      <div class="session-header">
+        <span class="session-date">${formattedDate}</span>
+        <span class="session-duration">${formattedDuration}</span>
+      </div>
+      <div class="session-topics">
+        ${session.topics.map((topic) => `<span class="topic-tag">${topic}</span>`).join("")}
+      </div>
+      <div class="session-stats">
+        <span class="errors-resolved">
+          <i class="codicon codicon-debug"></i> ${session.errorsResolved} errors resolved
+        </span>
+      </div>
+    `
+
+    sessionsList.appendChild(sessionItem)
+  })
+
+  // Add a message if no sessions
+  if (sortedSessions.length === 0) {
+    const noSessions = document.createElement("div")
+    noSessions.className = "no-sessions"
+    noSessions.textContent = "No learning sessions recorded yet."
+    sessionsList.appendChild(noSessions)
+  }
+}
+
+// Add CSS styles for the new elements
+const styleSheet = document.createElement("style")
+styleSheet.textContent = `
+  .language-distribution, .error-types, .weekly-activity, .concepts-learned, .learning-sessions {
+    margin-bottom: 2rem;
+  }
+  
+  .chart-container {
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    height: 200px;
+  }
+  
+  .concepts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .concept-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius-md);
+    font-size: 0.85rem;
+  }
+  
+  .sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .session-item {
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+  }
+  
+  .session-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .session-date {
+    font-weight: 500;
+  }
+  
+  .session-duration {
+    color: var(--text-secondary);
+  }
+  
+  .session-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .topic-tag {
+    background-color: rgba(77, 132, 255, 0.2);
+    color: var(--primary-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+  }
+  
+  .session-stats {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+  
+  .no-sessions {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+  }
+`
+document.head.appendChild(styleSheet)
+
+// Update the event listener for messages from the extension
+window.addEventListener("message", (event) => {
+  const message = event.data
+
+  switch (message.command) {
+    // Add this case to handle learning stats updates
+    case "updateLearningStats":
+      updateLearningAnalytics(message.stats)
+      break
+
+    // Other existing cases...
+  }
+})
+
+// Initialize charts when the journal tab is shown
+document.querySelector('[data-tab="journal"]').addEventListener("click", () => {
+  // Request the latest stats from the extension
+  vscode.postMessage({
+    command: "getLearningStats",
+  })
+})
